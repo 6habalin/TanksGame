@@ -23,13 +23,9 @@ public class Map {
                                 throw new InvalidMapException("Not enough map elements");
                             }
                             break;
-                        case '0':
-                        case '1':
-                        case 'P':
+                        default:
                             map[i][j] = temp;
                             break;
-                        default:
-                            throw new InvalidMapException("Something went wrong");
                     }
                 }
             }
