@@ -1,36 +1,146 @@
 package sample;
 
+import javafx.animation.TranslateTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 
 import java.io.File;
 
 public class Tank extends MyPlayer {
-    private final File file = new File("src/Images/tankUp.png");
-    private final Image image = new Image(file.toURI().toString());
+    private final File tankUp = new File("src/Images/tankUp.png");
+    private final File tankDown = new File("src/Images/tankDown.png");
+    private final File tankLeft = new File("src/Images/tankLeft.png");
+    private final File tankRight = new File("src/Images/tankRight.png");
+    private Image image = new Image(tankUp.toURI().toString());
     private final ImageView tankView = new ImageView(image);
-    Position position;
+    private Position position;
     private int size = 0;
+    final Map map;
 
-    Tank(int x, int y) {
-        position = new Position(x, y);
+    Tank(Map map) {
+        this.map = map;
+        for (int i = 0; i < map.getSize(); i++) {
+            for (int j = 0; j < map.getSize(); j++) {
+                if (map.getValueAt(i, j) == 'P') {
+                    position = new Position(j, i);
+                }
+            }
+        }
     }
 
-    Tank() {}
-
-    public ImageView getTank() {
+    public ImageView getTank() {    // return graphical tank
         tankView.setFitHeight(size);
         tankView.setFitWidth(size);
         return tankView;
     }
 
-    public void setPosition(int x, int y) {
-        position.setX(x);
-        position.setY(y);
-    }
-
-    public void setSize(int x){
+    public void setSize(int x) {
         size = x;
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public void moveRight(Tank tank) {
+        int x = position.getY();
+        int y = position.getX();
+        tank.setTankImage(tankRight);
+        if (y + 1 <= map.getSize() - 1) {
+            switch (map.getValueAt(x, y + 1)) {
+                case 'T':
+                case '0':
+                case 'P':
+                    TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
+                    transition.setByX(tank.getSize());
+                    transition.play();
+                    try {
+                        Thread.sleep(90);
+                        position.setX(y + 1);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                    System.out.println(position.getX() + " " + position.getY());
+                    break;
+            }
+        }
+    }
+
+    public void moveUp(Tank tank) {
+        int x = position.getY();
+        int y = position.getX();
+        tank.setTankImage(tankUp);
+        if (x - 1 >= 0) {
+            switch (map.getValueAt(x - 1, y)) {
+                case 'T':
+                case '0':
+                case 'P':
+                    TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
+                    transition.setByY((-1) * tank.getSize());
+                    transition.play();
+                    try {
+                        Thread.sleep(90);
+                        position.setY(x - 1);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                    System.out.println(position.getX() + " " + position.getY());
+                    break;
+            }
+        }
+    }
+
+    public void moveDown(Tank tank) {
+        int x = position.getY();
+        int y = position.getX();
+        tank.setTankImage(tankDown);
+        if (x + 1 <= map.getSize() - 1) {
+            switch (map.getValueAt(x + 1, y)) {
+                case 'T':
+                case '0':
+                case 'P':
+                    TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
+                    transition.setByY(tank.getSize());
+                    transition.play();
+                    try {
+                        Thread.sleep(90);
+                        position.setY(x + 1);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                    System.out.println(position.getX() + " " + position.getY());
+                    break;
+            }
+        }
+    }
+
+    public void moveLeft(Tank tank) {
+        int x = position.getY();
+        int y = position.getX();
+        tank.setTankImage(tankLeft);
+        if (y - 1 >= 0) {
+            switch (map.getValueAt(x, y - 1)) {
+                case 'T':
+                case '0':
+                case 'P':
+                    TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
+                    transition.setByX((-1) * tank.getSize());
+                    transition.play();
+                    try {
+                        Thread.sleep(90);
+                        position.setX(y - 1);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                    System.out.println(position.getX() + " " + position.getY());
+                    break;
+            }
+        }
+    }
+
+    private void setTankImage(File file) {
+        image = new Image(file.toURI().toString());
+        tankView.setImage(image);
+    }
 }

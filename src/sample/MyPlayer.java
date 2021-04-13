@@ -1,12 +1,15 @@
 package sample;
 
-public class MyPlayer implements Player{
+public class MyPlayer implements Player {
     private Map map;
+    private int mapSize = 0;
     private final Position position = new Position(0, 0);
+
 
     @Override
     public void setMap(Map map) {
         this.map = map;
+        mapSize = map.getSize();
         for (int i = 0; i < map.getSize(); i++) {
             for (int j = 0; j < map.getSize(); j++) {
                 if (map.getValueAt(i, j) == 'P') {
@@ -22,7 +25,7 @@ public class MyPlayer implements Player{
     public void moveRight() {
         int x = position.getY();
         int y = position.getX();
-        if (y + 1 <= map.getSize() - 1) {
+        if (y + 1 <= mapSize - 1) {
             if (map.getValueAt(x, y + 1) != '1') {
                 position.setX(y + 1);
             }
@@ -66,4 +69,5 @@ public class MyPlayer implements Player{
     public Position getPosition() {
         return position;
     }
+
 }
