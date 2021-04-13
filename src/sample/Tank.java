@@ -17,6 +17,7 @@ public class Tank extends MyPlayer {
     private Position position;
     private int size = 0;
     final Map map;
+    private int direction = 1;
 
     Tank(Map map) {
         this.map = map;
@@ -47,6 +48,7 @@ public class Tank extends MyPlayer {
         int x = position.getY();
         int y = position.getX();
         tank.setTankImage(tankRight);
+        direction = 2;
         if (y + 1 <= map.getSize() - 1) {
             switch (map.getValueAt(x, y + 1)) {
                 case 'T':
@@ -61,7 +63,6 @@ public class Tank extends MyPlayer {
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
                     }
-                    System.out.println(position.getX() + " " + position.getY());
                     break;
             }
         }
@@ -71,6 +72,7 @@ public class Tank extends MyPlayer {
         int x = position.getY();
         int y = position.getX();
         tank.setTankImage(tankUp);
+        direction = 1;
         if (x - 1 >= 0) {
             switch (map.getValueAt(x - 1, y)) {
                 case 'T':
@@ -85,7 +87,6 @@ public class Tank extends MyPlayer {
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
                     }
-                    System.out.println(position.getX() + " " + position.getY());
                     break;
             }
         }
@@ -95,6 +96,7 @@ public class Tank extends MyPlayer {
         int x = position.getY();
         int y = position.getX();
         tank.setTankImage(tankDown);
+        direction = 3;
         if (x + 1 <= map.getSize() - 1) {
             switch (map.getValueAt(x + 1, y)) {
                 case 'T':
@@ -109,7 +111,6 @@ public class Tank extends MyPlayer {
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
                     }
-                    System.out.println(position.getX() + " " + position.getY());
                     break;
             }
         }
@@ -119,6 +120,7 @@ public class Tank extends MyPlayer {
         int x = position.getY();
         int y = position.getX();
         tank.setTankImage(tankLeft);
+        direction = 4;
         if (y - 1 >= 0) {
             switch (map.getValueAt(x, y - 1)) {
                 case 'T':
@@ -133,7 +135,6 @@ public class Tank extends MyPlayer {
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
                     }
-                    System.out.println(position.getX() + " " + position.getY());
                     break;
             }
         }
@@ -142,5 +143,13 @@ public class Tank extends MyPlayer {
     private void setTankImage(File file) {
         image = new Image(file.toURI().toString());
         tankView.setImage(image);
+    }
+
+    public int getTankDirection(){
+        return direction;
+    }
+
+    public Position getTankPosition(){
+        return position;
     }
 }

@@ -1,37 +1,34 @@
 package sample;
 
-import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class Game {
-    private Map map = null;
+    private final Map map;
     static Scene sceneMain;
     private final Tank tank;
     final GridPane fieldPane = new GridPane();
     final Barriers barriers = new Barriers();
+    Bullet bullet;
 
     Game(Map map, Tank tank) {
         this.tank = tank;
-        setMap(map);
-    }
-
-    public void setMap(Map map) {
         this.map = map;
+        bullet = new Bullet(map, tank.getTankDirection());
     }
 
     VBox startVBox(Stage primaryStage) throws FileNotFoundException {
@@ -50,7 +47,6 @@ public class Game {
         start.getChildren().addAll(text, startButton);
         sceneMain = new Scene(gameVBox(), 650, 600);
         sceneMain.setOnKeyPressed(e -> {
-            TranslateTransition transition = new TranslateTransition(Duration.millis(200), tank.getTank());
             switch (e.getCode()) {
                 case UP:
                 case W:
@@ -68,6 +64,16 @@ public class Game {
                 case D:
                     tank.moveRight(tank);
                     break;
+                case SPACE:
+                    bullet.fire(tank, fieldPane);
+                    bullet.bulletUpdate();
+                    break;
+            }
+        });
+        sceneMain.setOnMouseClicked(e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                bullet.fire(tank, fieldPane);
+                bullet.bulletUpdate();
             }
         });
         startButton.setOnMouseClicked(e -> primaryStage.setScene(sceneMain));

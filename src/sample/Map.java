@@ -6,6 +6,7 @@ public class Map {
     private final char[][] map;
 
     public Map(Scanner input) throws InvalidMapException {
+        //TODO optimize map "Not enough elements" for text file
         int size = Integer.parseInt(input.next());
         if (size == 0) {
             throw new InvalidMapException("Map size can not be zero");
