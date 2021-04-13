@@ -8,7 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 import java.io.File;
-//TODO make brick barriers
+//TODO make brick barriers destructible
 public class Bullet {
     private int x = 0;
     private int y = 0;
@@ -79,7 +79,7 @@ public class Bullet {
             if(counter > 1){
                 counter--;
             }
-            transition.setByY((-1) * counter * tank.getSize());
+            transition.setByY((-1) * counter * tank.getSize() - 25);
             transition.play();
             pause.setOnFinished(e -> bullet.getBulletView(tank).setVisible(false));
             pause.play();
@@ -101,7 +101,7 @@ public class Bullet {
             if(counter > 1){
                 counter--;
             }
-            transition.setByY(counter * tank.getSize());
+            transition.setByY(counter * tank.getSize() + 25);
             transition.play();
             pause.setOnFinished(e -> bullet.getBulletView(tank).setVisible(false));
             pause.play();
@@ -123,7 +123,7 @@ public class Bullet {
             if(counter > 1){
                 counter--;
             }
-            transition.setByX((-1) * counter * tank.getSize());
+            transition.setByX((-1) * counter * tank.getSize() - 25);
             transition.play();
             pause.setOnFinished(e -> bullet.getBulletView(tank).setVisible(false));
             pause.play();
@@ -145,7 +145,7 @@ public class Bullet {
             if(counter > 1){
                 counter--;
             }
-            transition.setByX(counter * tank.getSize());
+            transition.setByX(counter * tank.getSize() + 25);
             transition.play();
             pause.setOnFinished(e -> bullet.getBulletView(tank).setVisible(false));
             pause.play();
@@ -158,11 +158,6 @@ public class Bullet {
         return bulletView;
     }
 
-    public void bulletUpdate() {
-        x = 0;
-        y = 0;
-        direction = 0;
-    }
 
 
 }

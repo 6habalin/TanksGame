@@ -66,14 +66,12 @@ public class Game {
                     break;
                 case SPACE:
                     bullet.fire(tank, fieldPane);
-                    bullet.bulletUpdate();
                     break;
             }
         });
         sceneMain.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 bullet.fire(tank, fieldPane);
-                bullet.bulletUpdate();
             }
         });
         startButton.setOnMouseClicked(e -> primaryStage.setScene(sceneMain));
