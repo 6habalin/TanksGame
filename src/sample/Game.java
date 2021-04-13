@@ -110,7 +110,7 @@ public class Game {
                 }
             }
         }
-        fieldPane.setGridLinesVisible(true);
+        //fieldPane.setGridLinesVisible(true);
         pane.setBackground(new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setAlignment(Pos.CENTER);
         pane.getChildren().add(fieldPane);

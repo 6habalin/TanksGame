@@ -49,4 +49,8 @@ public class Map {
             System.out.println();
         }
     }
+
+    public void setElement(char value, int x, int y){
+        map[x][y] = value;
+    }
 }

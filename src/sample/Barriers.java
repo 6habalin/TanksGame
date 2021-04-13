@@ -3,6 +3,7 @@ package sample;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.awt.*;
 import java.io.File;
 
 public class Barriers {

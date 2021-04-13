@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 import java.io.File;
+
 //TODO make brick barriers destructible
 public class Bullet {
     private int x = 0;
@@ -64,6 +65,8 @@ public class Bullet {
         }
     }
 
+    //TODO now tank can destruct barriers up and down, but need to fire 5 times, also should implement left and right barriers destruction
+
     public void fireUp(Tank tank, GridPane fieldPane) {
         if (y > 0 && barriers[y - 1][x] != 9) {
             int counter = 1;
@@ -72,11 +75,21 @@ public class Bullet {
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             int i = y - 1;
-            while (i >= 0 && barriers[i][x] == 0) {
-                counter++;
-                i--;
+            while (i >= 0) {
+                if (barriers[i][x] == 0) {
+                    if (map.getValueAt(i, x) != '0') {
+                        map.setElement('0', i, x);
+                    }
+                    counter++;
+                    i--;
+                } else if (barriers[i][x] == 9) {
+                    break;
+                } else {
+                    barriers[i][x]--;
+                    break;
+                }
             }
-            if(counter > 1){
+            if (counter > 1) {
                 counter--;
             }
             transition.setByY((-1) * counter * tank.getSize() - 25);
@@ -94,11 +107,21 @@ public class Bullet {
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             int i = y + 1;
-            while (i < barriers.length && barriers[i][x] == 0) {
-                counter++;
-                i++;
+            while (i < barriers.length) {
+                if (barriers[i][x] == 0) {
+                    if (map.getValueAt(i, x) != '0') {
+                        map.setElement('0', i, x);
+                    }
+                    counter++;
+                    i++;
+                } else if(barriers[i][x] == 9){
+                    break;
+                } else {
+                    barriers[i][x]--;
+                    break;
+                }
             }
-            if(counter > 1){
+            if (counter > 1) {
                 counter--;
             }
             transition.setByY(counter * tank.getSize() + 25);
@@ -117,10 +140,13 @@ public class Bullet {
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             int i = x - 1;
             while (i >= 0 && barriers[y][i] == 0) {
+                if (map.getValueAt(y, i) != '0') {
+                    map.setElement('0', y, i);
+                }
                 counter++;
                 i--;
             }
-            if(counter > 1){
+            if (counter > 1) {
                 counter--;
             }
             transition.setByX((-1) * counter * tank.getSize() - 25);
@@ -139,10 +165,13 @@ public class Bullet {
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             int i = x + 1;
             while (i < barriers.length && barriers[y][i] == 0) {
+                if (map.getValueAt(y, i) != '0') {
+                    map.setElement('0', y, i);
+                }
                 counter++;
                 i++;
             }
-            if(counter > 1){
+            if (counter > 1) {
                 counter--;
             }
             transition.setByX(counter * tank.getSize() + 25);
@@ -157,7 +186,6 @@ public class Bullet {
         bulletView.setFitWidth(tank.getSize() - Math.round((tank.getSize() * 10.0) / 100));
         return bulletView;
     }
-
 
 
 }
