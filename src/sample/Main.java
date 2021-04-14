@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class Main extends Application {
 
-    static Scene sceneStart;
+    public Scene sceneStart;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
