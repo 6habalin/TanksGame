@@ -18,6 +18,7 @@ public class Tank extends MyPlayer {
     private int size = 0;
     final Map map;
     private int direction = 1;
+    private int tankLives = 5;
 
     Tank(Map map) {
         this.map = map;
@@ -33,7 +34,6 @@ public class Tank extends MyPlayer {
     public ImageView getTank() {
         tankView.setFitHeight(size);
         tankView.setFitWidth(size);
-        tankView.toFront();
         return tankView;
     }
 
@@ -53,10 +53,12 @@ public class Tank extends MyPlayer {
         if (y + 1 <= map.getSize() - 1) {
             switch (map.getValueAt(x, y + 1)) {
                 case 'T':
-
-
+                    tank.getTank().toBack();
                 case '0':
                 case 'P':
+                    if(map.getValueAt(x, y + 1) != 'T'){
+                        tank.getTank().toFront();
+                    }
                     TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
                     transition.setByX(tank.getSize());
                     transition.play();
@@ -79,8 +81,12 @@ public class Tank extends MyPlayer {
         if (x - 1 >= 0) {
             switch (map.getValueAt(x - 1, y)) {
                 case 'T':
+                    tank.getTank().toBack();
                 case '0':
                 case 'P':
+                    if(map.getValueAt(x - 1, y) != 'T'){
+                        tank.getTank().toFront();
+                    }
                     TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
                     transition.setByY((-1) * tank.getSize());
                     transition.play();
@@ -103,8 +109,12 @@ public class Tank extends MyPlayer {
         if (x + 1 <= map.getSize() - 1) {
             switch (map.getValueAt(x + 1, y)) {
                 case 'T':
+                    tank.getTank().toBack();
                 case '0':
                 case 'P':
+                    if(map.getValueAt(x + 1, y) != 'T'){
+                        tank.getTank().toFront();
+                    }
                     TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
                     transition.setByY(tank.getSize());
                     transition.play();
@@ -127,8 +137,12 @@ public class Tank extends MyPlayer {
         if (y - 1 >= 0) {
             switch (map.getValueAt(x, y - 1)) {
                 case 'T':
+                    tank.getTank().toBack();
                 case '0':
                 case 'P':
+                    if(map.getValueAt(x, y - 1) != 'T'){
+                        tank.getTank().toFront();
+                    }
                     TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
                     transition.setByX((-1) * tank.getSize());
                     transition.play();
@@ -154,6 +168,10 @@ public class Tank extends MyPlayer {
 
     public Position getTankPosition(){
         return position;
+    }
+
+    public int getTankLives(){
+        return tankLives;
     }
 
 }

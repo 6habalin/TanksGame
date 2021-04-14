@@ -13,6 +13,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -80,7 +81,7 @@ public class Game {
 
     StackPane gameVBox() {
         StackPane pane = new StackPane();
-
+        Text text = new Text(String.valueOf(tank.getTankLives()));
         fieldPane.setMaxSize(500, 500);
         fieldPane.setMinSize(500, 500);
         fieldPane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -110,10 +111,9 @@ public class Game {
                 }
             }
         }
-        //fieldPane.setGridLinesVisible(true);
         pane.setBackground(new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setAlignment(Pos.CENTER);
-        pane.getChildren().add(fieldPane);
+        pane.getChildren().addAll(fieldPane);
         return pane;
     }
 

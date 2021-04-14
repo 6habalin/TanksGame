@@ -57,7 +57,7 @@ public class Barriers {
         return imageView;
     }
 
-    public ImageView getBlack(){
+    public ImageView getBlack(int size){
         file = new File("src/Images/black.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
