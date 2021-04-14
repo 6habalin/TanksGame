@@ -30,9 +30,10 @@ public class Tank extends MyPlayer {
         }
     }
 
-    public ImageView getTank() {    // return graphical tank
+    public ImageView getTank() {
         tankView.setFitHeight(size);
         tankView.setFitWidth(size);
+        tankView.toFront();
         return tankView;
     }
 
@@ -52,6 +53,8 @@ public class Tank extends MyPlayer {
         if (y + 1 <= map.getSize() - 1) {
             switch (map.getValueAt(x, y + 1)) {
                 case 'T':
+
+
                 case '0':
                 case 'P':
                     TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
@@ -152,4 +155,5 @@ public class Tank extends MyPlayer {
     public Position getTankPosition(){
         return position;
     }
+
 }

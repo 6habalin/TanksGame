@@ -2,8 +2,6 @@ package sample;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
-import java.awt.*;
 import java.io.File;
 
 public class Barriers {
@@ -36,6 +34,7 @@ public class Barriers {
         imageView = new ImageView(image);
         imageView.setFitHeight(size);
         imageView.setFitWidth(size);
+        imageView.toFront();
         return imageView;
     }
 
@@ -55,6 +54,16 @@ public class Barriers {
         imageView.setOpacity(0);
         imageView.setFitHeight(size);
         imageView.setFitWidth(size);
+        return imageView;
+    }
+
+    public ImageView getBlack(){
+        file = new File("src/Images/black.png");
+        image = new Image(file.toURI().toString());
+        imageView = new ImageView(image);
+        imageView.setFitHeight(size);
+        imageView.setFitWidth(size);
+        imageView.toBack();
         return imageView;
     }
 

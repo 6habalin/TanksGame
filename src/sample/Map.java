@@ -1,33 +1,31 @@
 package sample;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Map {
     private final char[][] map;
 
     public Map(Scanner input) throws InvalidMapException {
-        //TODO optimize map "Not enough elements" for text file
         int size = Integer.parseInt(input.next());
         if (size == 0) {
             throw new InvalidMapException("Map size can not be zero");
         } else {
             map = new char[size][size];
+            List<Character> list = new ArrayList<Character>();
+            while(input.hasNext()){
+                list.add(input.next().charAt(0));
+            }
+            if(list.size() != size * size){
+                throw new InvalidMapException("Not enough map elements");
+            }
+            int counter = 0;
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
-                    char temp = input.next().charAt(0);
-                    switch (temp) {
-                        case 'R':
-                        case 'L':
-                        case 'U':
-                        case 'D':
-                            if (i < size - 1) {
-                                throw new InvalidMapException("Not enough map elements");
-                            }
-                            break;
-                        default:
-                            map[i][j] = temp;
-                            break;
-                    }
+                    char temp = list.get(counter);
+                    map[i][j] = temp;
+                    counter++;
                 }
             }
         }

@@ -9,7 +9,6 @@ import javafx.util.Duration;
 
 import java.io.File;
 
-//TODO make brick barriers destructible
 public class Bullet {
     private int x = 0;
     private int y = 0;
@@ -65,8 +64,6 @@ public class Bullet {
         }
     }
 
-    //TODO now tank can destruct barriers up and down, but need to fire 5 times, also should implement left and right barriers destruction
-
     public void fireUp(Tank tank, GridPane fieldPane) {
         if (y > 0 && barriers[y - 1][x] != 9) {
             int counter = 1;
@@ -77,12 +74,17 @@ public class Bullet {
             int i = y - 1;
             while (i >= 0) {
                 if (barriers[i][x] == 0) {
-                    if (map.getValueAt(i, x) != '0') {
-                        map.setElement('0', i, x);
-                    }
                     counter++;
                     i--;
                 } else if (barriers[i][x] == 9) {
+                    break;
+                } else if (barriers[i][x] == 1) {
+                    if (map.getValueAt(i, x) != '0') {
+                        map.setElement('0', i, x);
+                        ImageView v = new Barriers().getBlack();
+                        fieldPane.add(v, x, i);
+                    }
+                    barriers[i][x]--;
                     break;
                 } else {
                     barriers[i][x]--;
@@ -109,12 +111,17 @@ public class Bullet {
             int i = y + 1;
             while (i < barriers.length) {
                 if (barriers[i][x] == 0) {
-                    if (map.getValueAt(i, x) != '0') {
-                        map.setElement('0', i, x);
-                    }
                     counter++;
                     i++;
-                } else if(barriers[i][x] == 9){
+                } else if (barriers[i][x] == 9) {
+                    break;
+                } else if (barriers[i][x] == 1) {
+                    if (map.getValueAt(i, x) != '0') {
+                        map.setElement('0', i, x);
+                        ImageView v = new Barriers().getBlack();
+                        fieldPane.add(v, x, i);
+                    }
+                    barriers[i][x]--;
                     break;
                 } else {
                     barriers[i][x]--;
@@ -139,12 +146,24 @@ public class Bullet {
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             int i = x - 1;
-            while (i >= 0 && barriers[y][i] == 0) {
-                if (map.getValueAt(y, i) != '0') {
-                    map.setElement('0', y, i);
+            while (i >= 0) {
+                if (barriers[y][i] == 0) {
+                    counter++;
+                    i--;
+                } else if (barriers[y][i] == 9) {
+                    break;
+                } else if (barriers[y][i] == 1) {
+                    if (map.getValueAt(y, i) != '0') {
+                        map.setElement('0', y, i);
+                        ImageView v = new Barriers().getBlack();
+                        fieldPane.add(v, i, y);
+                    }
+                    barriers[y][i]--;
+                    break;
+                } else {
+                    barriers[y][i]--;
+                    break;
                 }
-                counter++;
-                i--;
             }
             if (counter > 1) {
                 counter--;
@@ -164,12 +183,24 @@ public class Bullet {
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             int i = x + 1;
-            while (i < barriers.length && barriers[y][i] == 0) {
-                if (map.getValueAt(y, i) != '0') {
-                    map.setElement('0', y, i);
+            while (i < barriers.length) {
+                if(barriers[y][i] == 0){
+                    counter++;
+                    i++;
+                } else if(barriers[y][i] == 9){
+                    break;
+                } else if(barriers[y][i] == 1){
+                    if (map.getValueAt(y, i) != '0') {
+                        map.setElement('0', y, i);
+                        ImageView v = new Barriers().getBlack();
+                        fieldPane.add(v, i, y);
+                    }
+                    barriers[y][i]--;
+                    break;
+                } else {
+                    barriers[y][i]--;
+                    break;
                 }
-                counter++;
-                i++;
             }
             if (counter > 1) {
                 counter--;
@@ -185,6 +216,32 @@ public class Bullet {
         bulletView.setFitHeight(tank.getSize() - Math.round((tank.getSize() * 10.0) / 100));
         bulletView.setFitWidth(tank.getSize() - Math.round((tank.getSize() * 10.0) / 100));
         return bulletView;
+    }
+
+    public void refreshMap(Tank tank, GridPane fieldPane){
+        fieldPane.getChildren().clear();
+        for (int i = 0; i < map.getSize(); i++) {
+            for (int j = 0; j < map.getSize(); j++) {
+                switch (map.getValueAt(i, j)) {
+                    case 'S':
+                        fieldPane.add(new Barriers().getSteel(), j, i);
+                        break;
+                    case 'B':
+                        fieldPane.add(new Barriers().getBrick(), j, i);
+                        break;
+                    case 'W':
+                        fieldPane.add(new Barriers().getWater(), j, i);
+                        break;
+                    case 'T':
+                        fieldPane.add(new Barriers().getTrees(), j, i);
+                        break;
+                    case '0':
+                        fieldPane.add(new Barriers().getTransparent(), j, i);
+                        break;
+                }
+            }
+        }
+        fieldPane.add(tank.getTank(), tank.getTankPosition().getX(), tank.getTankPosition().getY());
     }
 
 
