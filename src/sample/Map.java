@@ -1,5 +1,7 @@
 package sample;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -7,15 +9,17 @@ import java.util.Scanner;
 public class Map {
     private final char[][] map;
 
-    public Map(Scanner input) throws InvalidMapException {
-        int size = Integer.parseInt(input.next());
+    public Map(Scanner input) throws InvalidMapException, FileNotFoundException {
+        File fileMap = new File("src/" + input.next());
+        Scanner scan = new Scanner(fileMap);
+        int size = Integer.parseInt(scan.next());
         if (size == 0) {
             throw new InvalidMapException("Map size can not be zero");
         } else {
             map = new char[size][size];
             List<Character> list = new ArrayList<Character>();
-            while(input.hasNext()){
-                list.add(input.next().charAt(0));
+            while(scan.hasNext()){
+                list.add(scan.next().charAt(0));
             }
             if(list.size() != size * size){
                 throw new InvalidMapException("Not enough map elements");

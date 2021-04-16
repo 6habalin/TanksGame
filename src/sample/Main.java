@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Main extends Application {
@@ -12,10 +13,9 @@ public class Main extends Application {
     public Scene sceneStart;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) throws FileNotFoundException {
 
-        File file = new File("src/map.txt");
-        Scanner input = new Scanner(file);
+        Scanner input = new Scanner(System.in);
         Tank tank;
         Player player = new MyPlayer();
         Game game = null;

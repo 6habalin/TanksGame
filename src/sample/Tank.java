@@ -56,6 +56,7 @@ public class Tank extends MyPlayer {
                     tank.getTank().toBack();
                 case '0':
                 case 'P':
+                    System.out.println("Right");
                     if(map.getValueAt(x, y + 1) != 'T'){
                         tank.getTank().toFront();
                     }
@@ -69,6 +70,8 @@ public class Tank extends MyPlayer {
                         interruptedException.printStackTrace();
                     }
                     break;
+                default:
+                    System.out.println("Invalid Position!");
             }
         }
     }
@@ -84,6 +87,7 @@ public class Tank extends MyPlayer {
                     tank.getTank().toBack();
                 case '0':
                 case 'P':
+                    System.out.println("Up");
                     if(map.getValueAt(x - 1, y) != 'T'){
                         tank.getTank().toFront();
                     }
@@ -97,6 +101,8 @@ public class Tank extends MyPlayer {
                         interruptedException.printStackTrace();
                     }
                     break;
+                default:
+                    System.out.println("Invalid Position!");
             }
         }
     }
@@ -112,6 +118,7 @@ public class Tank extends MyPlayer {
                     tank.getTank().toBack();
                 case '0':
                 case 'P':
+                    System.out.println("Down");
                     if(map.getValueAt(x + 1, y) != 'T'){
                         tank.getTank().toFront();
                     }
@@ -125,6 +132,8 @@ public class Tank extends MyPlayer {
                         interruptedException.printStackTrace();
                     }
                     break;
+                default:
+                    System.out.println("Invalid Position!");
             }
         }
     }
@@ -140,6 +149,7 @@ public class Tank extends MyPlayer {
                     tank.getTank().toBack();
                 case '0':
                 case 'P':
+                    System.out.println("Left");
                     if(map.getValueAt(x, y - 1) != 'T'){
                         tank.getTank().toFront();
                     }
@@ -153,6 +163,8 @@ public class Tank extends MyPlayer {
                         interruptedException.printStackTrace();
                     }
                     break;
+                default:
+                    System.out.println("Invalid Position!");
             }
         }
     }
