@@ -8,10 +8,10 @@ import javafx.util.Duration;
 import java.io.File;
 
 public class Tank extends MyPlayer {
-    private final File tankUp = new File("src/Images/tankUp.png");
-    private final File tankDown = new File("src/Images/tankDown.png");
-    private final File tankLeft = new File("src/Images/tankLeft.png");
-    private final File tankRight = new File("src/Images/tankRight.png");
+    private final File tankUp = new File("src/sample/Images/tankUp.png");
+    private final File tankDown = new File("src/sample/Images/tankDown.png");
+    private final File tankLeft = new File("src/sample/Images/tankLeft.png");
+    private final File tankRight = new File("src/sample/Images/tankRight.png");
     private Image image = new Image(tankUp.toURI().toString());
     private final ImageView tankView = new ImageView(image);
     private Position position;
@@ -57,7 +57,7 @@ public class Tank extends MyPlayer {
                 case '0':
                 case 'P':
                     System.out.println("Right");
-                    if(map.getValueAt(x, y + 1) != 'T'){
+                    if (map.getValueAt(x, y + 1) != 'T') {
                         tank.getTank().toFront();
                     }
                     TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
@@ -88,7 +88,7 @@ public class Tank extends MyPlayer {
                 case '0':
                 case 'P':
                     System.out.println("Up");
-                    if(map.getValueAt(x - 1, y) != 'T'){
+                    if (map.getValueAt(x - 1, y) != 'T') {
                         tank.getTank().toFront();
                     }
                     TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
@@ -119,7 +119,7 @@ public class Tank extends MyPlayer {
                 case '0':
                 case 'P':
                     System.out.println("Down");
-                    if(map.getValueAt(x + 1, y) != 'T'){
+                    if (map.getValueAt(x + 1, y) != 'T') {
                         tank.getTank().toFront();
                     }
                     TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
@@ -150,7 +150,7 @@ public class Tank extends MyPlayer {
                 case '0':
                 case 'P':
                     System.out.println("Left");
-                    if(map.getValueAt(x, y - 1) != 'T'){
+                    if (map.getValueAt(x, y - 1) != 'T') {
                         tank.getTank().toFront();
                     }
                     TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
@@ -174,15 +174,15 @@ public class Tank extends MyPlayer {
         tankView.setImage(image);
     }
 
-    public int getTankDirection(){
+    public int getTankDirection() {
         return direction;
     }
 
-    public Position getTankPosition(){
+    public Position getTankPosition() {
         return position;
     }
 
-    public int getTankLives(){
+    public int getTankLives() {
         return tankLives;
     }
 

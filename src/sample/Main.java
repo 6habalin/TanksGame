@@ -4,24 +4,22 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 public class Main extends Application {
 
     public Scene sceneStart;
+    private static String arguments;
 
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
 
-        Scanner input = new Scanner(System.in);
         Tank tank;
         Player player = new MyPlayer();
         Game game = null;
 
         try {
-            Map map = new Map(input);
+            Map map = new Map(arguments);
             player.setMap(map);
             tank = new Tank(map);
             game = new Game(map, tank);
@@ -37,9 +35,8 @@ public class Main extends Application {
     }
 
 
-
-
     public static void main(String[] args) {
+        arguments = args[0];
         launch(args);
     }
 

@@ -9,8 +9,8 @@ import java.util.Scanner;
 public class Map {
     private final char[][] map;
 
-    public Map(Scanner input) throws InvalidMapException, FileNotFoundException {
-        File fileMap = new File("src/" + input.next());
+    public Map(String input) throws InvalidMapException, FileNotFoundException {
+        File fileMap = new File("src/sample/" + input);
         Scanner scan = new Scanner(fileMap);
         int size = Integer.parseInt(scan.next());
         if (size == 0) {
@@ -18,10 +18,10 @@ public class Map {
         } else {
             map = new char[size][size];
             List<Character> list = new ArrayList<Character>();
-            while(scan.hasNext()){
+            while (scan.hasNext()) {
                 list.add(scan.next().charAt(0));
             }
-            if(list.size() != size * size){
+            if (list.size() != size * size) {
                 throw new InvalidMapException("Not enough map elements");
             }
             int counter = 0;
@@ -52,7 +52,7 @@ public class Map {
         }
     }
 
-    public void setElement(char value, int x, int y){
+    public void setElement(char value, int x, int y) {
         map[x][y] = value;
     }
 }

@@ -2,6 +2,7 @@ package sample;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
 import java.io.File;
 
 public class Barriers {
@@ -10,8 +11,8 @@ public class Barriers {
     private ImageView imageView = null;
     private int size = 0;
 
-    public ImageView getBrick(){
-        file = new File("src/Images/brick.png");
+    public ImageView getBrick() {
+        file = new File("src/sample/Images/brick.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setFitHeight(size);
@@ -19,8 +20,8 @@ public class Barriers {
         return imageView;
     }
 
-    public ImageView getSteel(){
-        file = new File("src/Images/steel.png");
+    public ImageView getSteel() {
+        file = new File("src/sample/Images/steel.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setFitHeight(size);
@@ -28,8 +29,8 @@ public class Barriers {
         return imageView;
     }
 
-    public ImageView getTrees(){
-        file = new File("src/Images/trees.png");
+    public ImageView getTrees() {
+        file = new File("src/sample/Images/trees.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setFitHeight(size);
@@ -38,8 +39,8 @@ public class Barriers {
         return imageView;
     }
 
-    public ImageView getWater(){
-        file = new File("src/Images/water.png");
+    public ImageView getWater() {
+        file = new File("src/sample/Images/water.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setFitHeight(size);
@@ -47,8 +48,8 @@ public class Barriers {
         return imageView;
     }
 
-    public ImageView getTransparent(){
-        file = new File("src/Images/water.png");
+    public ImageView getTransparent() {
+        file = new File("src/sample/Images/water.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setOpacity(0);
@@ -57,8 +58,8 @@ public class Barriers {
         return imageView;
     }
 
-    public ImageView getBlack(int size){
-        file = new File("src/Images/black.png");
+    public ImageView getBlack(int size) {
+        file = new File("src/sample/Images/black.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setFitHeight(size);
@@ -67,13 +68,14 @@ public class Barriers {
         return imageView;
     }
 
-    public void setSize(int sizeOfMap){
+    public void setSize(int sizeOfMap) {
         size = 500 / sizeOfMap;
     }
 
-    public int getSize(){
+    public int getSize() {
         return size;
     }
 
 
 }
+

@@ -40,7 +40,7 @@ public class Game {
         text.setFont(Font.font("Snell Roundhand", FontWeight.BOLD, 104));
         text.setStroke(Color.DARKRED);
         text.setFill(Color.WHITE);
-        InputStream stream = new FileInputStream("src/Images/start.png");
+        InputStream stream = new FileInputStream("src/sample/Images/start.png");
         Image image = new Image(stream);
         ImageView startButton = new ImageView(image);
         startButton.setFitWidth(200);
@@ -69,12 +69,14 @@ public class Game {
                     break;
                 case SPACE:
                     bullet.fire(tank, fieldPane);
+                    System.out.println("Fire!");
                     break;
             }
         });
         sceneMain.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 bullet.fire(tank, fieldPane);
+                System.out.println("Fire!");
             }
         });
         return start;

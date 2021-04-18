@@ -15,7 +15,7 @@ public class Bullet {
     private int direction;
     private final Map map;
     private int[][] barriers;
-    private final File bullet = new File("src/Images/bullet.png");
+    private final File bullet = new File("src/sample/Images/bullet.png");
     private final Image image = new Image(bullet.toURI().toString());
     private final ImageView bulletView = new ImageView(image);
 
@@ -187,12 +187,12 @@ public class Bullet {
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             int i = x + 1;
             while (i < barriers.length) {
-                if(barriers[y][i] == 0){
+                if (barriers[y][i] == 0) {
                     counter++;
                     i++;
-                } else if(barriers[y][i] == 9){
+                } else if (barriers[y][i] == 9) {
                     break;
-                } else if(barriers[y][i] == 1){
+                } else if (barriers[y][i] == 1) {
                     if (map.getValueAt(y, i) != '0') {
                         map.setElement('0', y, i);
                         ImageView v = new Barriers().getBlack(tank.getSize());
@@ -223,5 +223,5 @@ public class Bullet {
     }
 
 
-
 }
+
