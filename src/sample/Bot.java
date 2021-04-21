@@ -7,32 +7,28 @@ import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.util.Random;
 
-public class Tank extends MyPlayer {
-    private final File tankUp = new File("src/sample/Images/tankUp.png");
-    private final File tankDown = new File("src/sample/Images/tankDown.png");
-    private final File tankLeft = new File("src/sample/Images/tankLeft.png");
-    private final File tankRight = new File("src/sample/Images/tankRight.png");
+public class Bot extends MyPlayer {
+    private final File tankUp = new File("src/sample/Images/botTankUp.png");
+    private final File tankDown = new File("src/sample/Images/botTankDown.png");
+    private final File tankLeft = new File("src/sample/Images/botTankLeft.png");
+    private final File tankRight = new File("src/sample/Images/botTankRight.png");
     private Image image = new Image(tankUp.toURI().toString());
     private final ImageView tankView = new ImageView(image);
     private Position position;
     private int size = 0;
-    private final Map map;
+    private Map map;
     private int direction = 1;
-    private int tankLives = 5;
+    private final Random rand = new Random();
 
-    Tank(Map map) {
+    Bot(Map map) {
         this.map = map;
-        for (int i = 0; i < map.getSize(); i++) {
-            for (int j = 0; j < map.getSize(); j++) {
-                if (map.getValueAt(i, j) == 'P') {
-                    position = new Position(j, i);
-                }
-            }
-        }
+        setBotRandPosition();
     }
 
-    public ImageView getTank() {
+
+    public ImageView getBotTank() {
         tankView.setFitHeight(size);
         tankView.setFitWidth(size);
         return tankView;
@@ -46,51 +42,24 @@ public class Tank extends MyPlayer {
         return size;
     }
 
-    public void moveRight(Tank tank) {
-        int x = position.getY();
-        int y = position.getX();
-        tank.setTankImage(tankRight);
-        direction = 2;
-        if (y + 1 <= map.getSize() - 1) {
-            switch (map.getValueAt(x, y + 1)) {
-                case 'T':
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            tank.getTank().toBack();
-                        }
-                    });
-                case '0':
-                case 'P':
-                    System.out.println("Right");
-                    if (map.getValueAt(x, y + 1) != 'T') {
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                tank.getTank().toFront();
-                            }
-                        });
-                    }
-                    TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
-                    transition.setByX(tank.getSize());
-                    transition.play();
-                    try {
-                        Thread.sleep(90);
-                        position.setX(y + 1);
-                    } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
-                    }
-                    break;
-                default:
-                    System.out.println("Invalid Position!");
+    public void setBotRandPosition() {
+        int randI = rand.nextInt(map.getSize());
+        int randJ = rand.nextInt(map.getSize());
+        while (true) {
+            if (map.getValueAt(randJ, randI) == '0') {
+                position = new Position(randI, randJ);
+                break;
+            } else {
+                randI = rand.nextInt(map.getSize());
+                randJ = rand.nextInt(map.getSize());
             }
         }
     }
 
-    public void moveUp(Tank tank) {
+    public void moveUp(Bot bot) {
         int x = position.getY();
         int y = position.getX();
-        tank.setTankImage(tankUp);
+        bot.setTankImage(tankUp);
         direction = 1;
         if (x - 1 >= 0) {
             switch (map.getValueAt(x - 1, y)) {
@@ -98,40 +67,75 @@ public class Tank extends MyPlayer {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            tank.getTank().toBack();
+                            bot.getBotTank().toBack();
                         }
                     });
                 case '0':
                 case 'P':
-                    System.out.println("Up");
                     if (map.getValueAt(x - 1, y) != 'T') {
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                tank.getTank().toFront();
+                                bot.getBotTank().toFront();
                             }
                         });
                     }
-                    TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
-                    transition.setByY((-1) * tank.getSize());
+                    TranslateTransition transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
+                    transition.setByY((-1) * getSize());
                     transition.play();
                     try {
-                        Thread.sleep(90);
+                        Thread.sleep(790);
                         position.setY(x - 1);
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
                     }
                     break;
-                default:
-                    System.out.println("Invalid Position!");
             }
         }
     }
 
-    public void moveDown(Tank tank) {
+    public void moveRight(Bot bot) {
         int x = position.getY();
         int y = position.getX();
-        tank.setTankImage(tankDown);
+        bot.setTankImage(tankRight);
+        direction = 2;
+        if (y + 1 <= map.getSize() - 1) {
+            switch (map.getValueAt(x, y + 1)) {
+                case 'T':
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            bot.getBotTank().toBack();
+                        }
+                    });
+                case '0':
+                case 'P':
+                    if (map.getValueAt(x, y + 1) != 'T') {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                bot.getBotTank().toFront();
+                            }
+                        });
+                    }
+                    TranslateTransition transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
+                    transition.setByX(bot.getSize());
+                    transition.play();
+                    try {
+                        Thread.sleep(790);
+                        position.setX(y + 1);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                    break;
+            }
+        }
+    }
+
+    public void moveDown(Bot bot) {
+        int x = position.getY();
+        int y = position.getX();
+        bot.setTankImage(tankDown);
         direction = 3;
         if (x + 1 <= map.getSize() - 1) {
             switch (map.getValueAt(x + 1, y)) {
@@ -139,40 +143,38 @@ public class Tank extends MyPlayer {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            tank.getTank().toBack();
+                            bot.getBotTank().toBack();
                         }
                     });
                 case '0':
                 case 'P':
-                    System.out.println("Down");
                     if (map.getValueAt(x + 1, y) != 'T') {
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                tank.getTank().toFront();
+                                bot.getBotTank().toFront();
                             }
                         });
                     }
-                    TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
-                    transition.setByY(tank.getSize());
+                    TranslateTransition transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
+                    transition.setByY(bot.getSize());
                     transition.play();
                     try {
-                        Thread.sleep(90);
+                        Thread.sleep(790);
                         position.setY(x + 1);
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
                     }
                     break;
-                default:
-                    System.out.println("Invalid Position!");
+
             }
         }
     }
 
-    public void moveLeft(Tank tank) {
+    public void moveLeft(Bot bot) {
         int x = position.getY();
         int y = position.getX();
-        tank.setTankImage(tankLeft);
+        bot.setTankImage(tankLeft);
         direction = 4;
         if (y - 1 >= 0) {
             switch (map.getValueAt(x, y - 1)) {
@@ -180,32 +182,29 @@ public class Tank extends MyPlayer {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            tank.getTank().toBack();
+                            bot.getBotTank().toBack();
                         }
                     });
                 case '0':
                 case 'P':
-                    System.out.println("Left");
                     if (map.getValueAt(x, y - 1) != 'T') {
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                tank.getTank().toBack();
+                                bot.getBotTank().toFront();
                             }
                         });
                     }
-                    TranslateTransition transition = new TranslateTransition(Duration.millis(100), tank.getTank());
-                    transition.setByX((-1) * tank.getSize());
+                    TranslateTransition transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
+                    transition.setByX((-1) * bot.getSize());
                     transition.play();
                     try {
-                        Thread.sleep(90);
+                        Thread.sleep(790);
                         position.setX(y - 1);
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
                     }
                     break;
-                default:
-                    System.out.println("Invalid Position!");
             }
         }
     }
@@ -215,16 +214,15 @@ public class Tank extends MyPlayer {
         tankView.setImage(image);
     }
 
-    public int getTankDirection() {
+    public int getBotDirection() {
         return direction;
     }
 
-    public Position getTankPosition() {
+    public Position getBotPosition() {
         return position;
     }
 
-    public int getTankLives() {
-        return tankLives;
+    public Map getMap() {
+        return map;
     }
-
 }

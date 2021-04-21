@@ -25,11 +25,19 @@ public class Game {
     final GridPane fieldPane = new GridPane();
     final Barriers barriers = new Barriers();
     Bullet bullet;
+    Bot bot1;
+    Bot bot2;
+    Bot bot3;
+    Bot[] botArray;
 
     Game(Map map, Tank tank) {
         this.tank = tank;
         this.map = map;
         bullet = new Bullet(map, tank.getTankDirection());
+        bot1 = new Bot(map);
+        bot2 = new Bot(map);
+        bot3 = new Bot(map);
+        botArray = new Bot[]{bot1, bot2, bot3};
     }
 
     public VBox startVBox(Stage primaryStage) throws FileNotFoundException {
@@ -48,37 +56,59 @@ public class Game {
         start.setAlignment(Pos.CENTER);
         start.getChildren().addAll(text, startButton);
         sceneMain = new Scene(gameVBox(), 650, 600);
-        startButton.setOnMouseClicked(e -> primaryStage.setScene(sceneMain));
+        startButton.setOnMouseClicked(e -> {
+            primaryStage.setScene(sceneMain);
+            Runnable runnable1 = new BotMovement(bot1);
+            Thread threadBot1 = new Thread(runnable1);
+            threadBot1.start();
+
+            Runnable runnable2 = new BotMovement(bot2);
+            Thread threadBot2 = new Thread(runnable2);
+            threadBot2.start();
+
+            Runnable runnable3 = new BotMovement(bot3);
+            Thread threadBot3 = new Thread(runnable3);
+            threadBot3.start();
+        });
+
         sceneMain.setOnKeyPressed(e -> {
+            Runnable movement = null;
             switch (e.getCode()) {
                 case UP:
                 case W:
-                    tank.moveUp(tank);
+                    movement = new TankMovement(tank, "up");
                     break;
                 case DOWN:
                 case S:
-                    tank.moveDown(tank);
+                    movement = new TankMovement(tank, "down");
                     break;
                 case LEFT:
                 case A:
-                    tank.moveLeft(tank);
+                    movement = new TankMovement(tank, "left");
                     break;
                 case RIGHT:
                 case D:
-                    tank.moveRight(tank);
+                    movement = new TankMovement(tank, "right");
                     break;
                 case SPACE:
-                    bullet.fire(tank, fieldPane);
+                    bullet.fire(tank, fieldPane, botArray);
                     System.out.println("Fire!");
                     break;
             }
+            Thread thread1 = new Thread(movement);
+            if (thread1.isAlive()) {
+                thread1.interrupt();
+            }
+            thread1.start();
         });
         sceneMain.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
-                bullet.fire(tank, fieldPane);
+                bullet.fire(tank, fieldPane, botArray);
                 System.out.println("Fire!");
             }
         });
+
+
         return start;
     }
 
@@ -96,6 +126,9 @@ public class Game {
         fieldPane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         barriers.setSize(map.getSize());
         tank.setSize(barriers.getSize());
+        bot1.setSize(barriers.getSize());
+        bot2.setSize(barriers.getSize());
+        bot3.setSize(barriers.getSize());
         for (int i = 0; i < map.getSize(); i++) {
             for (int j = 0; j < map.getSize(); j++) {
                 switch (map.getValueAt(i, j)) {
@@ -120,6 +153,9 @@ public class Game {
                 }
             }
         }
+        fieldPane.add(bot1.getBotTank(), bot1.getBotPosition().getX(), bot1.getBotPosition().getY());
+        fieldPane.add(bot2.getBotTank(), bot2.getBotPosition().getX(), bot2.getBotPosition().getY());
+        fieldPane.add(bot3.getBotTank(), bot3.getBotPosition().getX(), bot3.getBotPosition().getY());
         pane.setBackground(new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
         return pane;
     }
