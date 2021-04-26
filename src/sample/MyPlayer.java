@@ -4,6 +4,8 @@ public class MyPlayer implements Player {
     private Map map;
     private int mapSize = 0;
     private final Position position = new Position(0, 0);
+    int x = 0;
+    int y = 0;
 
 
     @Override
@@ -23,8 +25,8 @@ public class MyPlayer implements Player {
 
     @Override
     public void moveRight() {
-        int x = position.getY();
-        int y = position.getX();
+        x = position.getY();
+        y = position.getX();
         if (y + 1 <= mapSize - 1) {
             if (map.getValueAt(x, y + 1) != '1') {
                 position.setX(y + 1);
@@ -34,8 +36,8 @@ public class MyPlayer implements Player {
 
     @Override
     public void moveLeft() {
-        int x = position.getY();
-        int y = position.getX();
+        x = position.getY();
+        y = position.getX();
         if (y - 1 >= 0) {
             if (map.getValueAt(x, y - 1) != '1') {
                 position.setX(y - 1);
@@ -45,8 +47,8 @@ public class MyPlayer implements Player {
 
     @Override
     public void moveUp() {
-        int x = position.getY();
-        int y = position.getX();
+        x = position.getY();
+        y = position.getX();
         if (x - 1 >= 0) {
             if (map.getValueAt(x - 1, y) != '1') {
                 position.setY(x - 1);
@@ -56,8 +58,8 @@ public class MyPlayer implements Player {
 
     @Override
     public void moveDown() {
-        int x = position.getY();
-        int y = position.getX();
+        x = position.getY();
+        y = position.getX();
         if (x + 1 <= map.getSize() - 1) {
             if (map.getValueAt(x + 1, y) != '1') {
                 position.setY(x + 1);

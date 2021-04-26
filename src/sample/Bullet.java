@@ -20,11 +20,13 @@ public class Bullet {
     private final File bullet = new File("src/sample/Images/bullet.png");
     private final Image image = new Image(bullet.toURI().toString());
     private final ImageView bulletView = new ImageView(image);
+    private final List<Bot> botList;
 
 
-    Bullet(Map map, int direction) {
+    Bullet(Map map, int direction, List<Bot> botList) {
         this.map = map;
         this.direction = direction;
+        this.botList = botList;
         barriers = new int[map.getSize()][map.getSize()];
         for (int i = 0; i < map.getSize(); i++) {
             for (int j = 0; j < map.getSize(); j++) {
@@ -43,41 +45,38 @@ public class Bullet {
         }
     }
 
-    public void fire(Tank tank, GridPane fieldPane, Bot[] botArray) {
+    public void fire(Tank tank, GridPane fieldPane) {
         bulletView.setFitHeight(tank.getSize() - Math.round((tank.getSize() * 10.0) / 100));
         bulletView.setFitWidth(tank.getSize() - Math.round((tank.getSize() * 10.0) / 100));
         direction = tank.getTankDirection();
         if (direction == 1) {
             x = tank.getTankPosition().getX();
             y = tank.getTankPosition().getY();
-            fireUp(tank, fieldPane, botArray);
+            fireUp(tank, fieldPane);
         } else if (direction == 2) {
             x = tank.getTankPosition().getX();
             y = tank.getTankPosition().getY();
-            fireRight(tank, fieldPane, botArray);
+            fireRight(tank, fieldPane);
         } else if (direction == 3) {
             x = tank.getTankPosition().getX();
             y = tank.getTankPosition().getY();
-            fireDown(tank, fieldPane, botArray);
+            fireDown(tank, fieldPane);
         } else if (direction == 4) {
             x = tank.getTankPosition().getX();
             y = tank.getTankPosition().getY();
-            fireLeft(tank, fieldPane, botArray);
+            fireLeft(tank, fieldPane);
         }
     }
 
-    public void fireUp(Tank tank, GridPane fieldPane, Bot[] botArray) {
+    public void fireUp(Tank tank, GridPane fieldPane) {
         if (y > 0 && barriers[y - 1][x] != 9) {
             int counter = 1;
-            List<String> botPositions = new ArrayList<String>();
-            Bullet bullet = new Bullet(map, tank.getTankDirection());
+            Bullet bullet = new Bullet(map, tank.getTankDirection(), botList);
             fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
-            for (int i = 0; i < botArray.length; i++) {
-                botPositions.add(botArray[i].getBotPosition().toString());
-            }
-            System.out.println(botPositions);
+            ImageView v = new Barriers().getBlack(tank.getSize());
+            killBotUpDown(tank, fieldPane, "Up");
             int i = y - 1;
             while (i >= 0) {
                 if (barriers[i][x] == 0) {
@@ -88,19 +87,15 @@ public class Bullet {
                 } else if (barriers[i][x] == 1) {
                     if (map.getValueAt(i, x) != '0') {
                         map.setElement('0', i, x);
-                        ImageView v = new Barriers().getBlack(tank.getSize());
                         fieldPane.add(v, x, i);
                         tank.getTank().toFront();
                     }
                     barriers[i][x]--;
                     break;
-                } else if (botPositions.contains("(" + i + "," + x + ")")) {
-                    System.out.println("HIT HIT HIT");
                 } else {
                     barriers[i][x]--;
                     break;
                 }
-                System.out.println(new Position(i, x));
             }
             if (counter > 1) {
                 counter--;
@@ -112,13 +107,14 @@ public class Bullet {
         }
     }
 
-    public void fireDown(Tank tank, GridPane fieldPane, Bot[] botArray) {
+    public void fireDown(Tank tank, GridPane fieldPane) {
         if (y < barriers.length && barriers[y + 1][x] != 9) {
             int counter = 1;
-            Bullet bullet = new Bullet(map, tank.getTankDirection());
+            Bullet bullet = new Bullet(map, tank.getTankDirection(), botList);
             fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
+            killBotUpDown(tank, fieldPane, "Down");
             int i = y + 1;
             while (i < barriers.length) {
                 if (barriers[i][x] == 0) {
@@ -150,10 +146,10 @@ public class Bullet {
         }
     }
 
-    public void fireLeft(Tank tank, GridPane fieldPane, Bot[] botArray) {
+    public void fireLeft(Tank tank, GridPane fieldPane) {
         if (x > 0 && barriers[y][x - 1] != 9) {
             int counter = 1;
-            Bullet bullet = new Bullet(map, tank.getTankDirection());
+            Bullet bullet = new Bullet(map, tank.getTankDirection(), botList);
             fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
@@ -188,10 +184,10 @@ public class Bullet {
         }
     }
 
-    public void fireRight(Tank tank, GridPane fieldPane, Bot[] botArray) {
+    public void fireRight(Tank tank, GridPane fieldPane) {
         if (x < barriers.length && barriers[y][x + 1] != 9) {
             int counter = 1;
-            Bullet bullet = new Bullet(map, tank.getTankDirection());
+            Bullet bullet = new Bullet(map, tank.getTankDirection(), botList);
             fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
@@ -230,6 +226,44 @@ public class Bullet {
         bulletView.setFitHeight(tank.getSize() - Math.round((tank.getSize() * 10.0) / 100));
         bulletView.setFitWidth(tank.getSize() - Math.round((tank.getSize() * 10.0) / 100));
         return bulletView;
+    }
+
+    public void killBotUpDown(Tank tank, GridPane fieldPane, String destination) {
+        ImageView v = new Barriers().getBlack(tank.getSize());
+        switch (destination) {
+            case "Up":
+                for (int i = 0; i < botList.size(); i++) {
+                    int j = y - 1;
+                    while (j >= 0) {
+                        if (botList.get(i).getPosition().equals(new Position(x, j))) {
+                            fieldPane.add(v, x, j);
+                            tank.getTank().toFront();
+                            botList.remove(botList.get(i));
+                            for (Bot value : botList) {
+                                value.getBotTank().toFront();
+                            }
+                        }
+                        j--;
+                    }
+                }
+                break;
+            case "Down":
+                for (int i = 0; i < botList.size(); i++) {
+                    int j = y + 1;
+                    while (j < barriers.length){
+                        if (botList.get(i).getPosition().equals(new Position(x, j))) {
+                            fieldPane.add(v, x, j);
+                            tank.getTank().toFront();
+                            botList.remove(botList.get(i));
+                            for (Bot value : botList) {
+                                value.getBotTank().toFront();
+                            }
+                        }
+                        j++;
+                    }
+                }
+                break;
+        }
     }
 
 

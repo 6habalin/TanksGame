@@ -9,7 +9,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.Random;
 
-public class Bot extends MyPlayer {
+public class Bot implements Player {
     private final File tankUp = new File("src/sample/Images/botTankUp.png");
     private final File tankDown = new File("src/sample/Images/botTankDown.png");
     private final File tankLeft = new File("src/sample/Images/botTankLeft.png");
@@ -21,6 +21,7 @@ public class Bot extends MyPlayer {
     private Map map;
     private int direction = 1;
     private final Random rand = new Random();
+    private TranslateTransition transition;
 
     Bot(Map map) {
         this.map = map;
@@ -80,7 +81,7 @@ public class Bot extends MyPlayer {
                             }
                         });
                     }
-                    TranslateTransition transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
+                    transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
                     transition.setByY((-1) * getSize());
                     transition.play();
                     try {
@@ -118,7 +119,7 @@ public class Bot extends MyPlayer {
                             }
                         });
                     }
-                    TranslateTransition transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
+                    transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
                     transition.setByX(bot.getSize());
                     transition.play();
                     try {
@@ -156,7 +157,7 @@ public class Bot extends MyPlayer {
                             }
                         });
                     }
-                    TranslateTransition transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
+                    transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
                     transition.setByY(bot.getSize());
                     transition.play();
                     try {
@@ -169,6 +170,31 @@ public class Bot extends MyPlayer {
 
             }
         }
+    }
+
+    @Override
+    public void moveRight() {
+
+    }
+
+    @Override
+    public void moveLeft() {
+
+    }
+
+    @Override
+    public void moveUp() {
+
+    }
+
+    @Override
+    public void moveDown() {
+
+    }
+
+    @Override
+    public void setMap(Map map) {
+
     }
 
     public void moveLeft(Bot bot) {
@@ -195,7 +221,7 @@ public class Bot extends MyPlayer {
                             }
                         });
                     }
-                    TranslateTransition transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
+                    transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
                     transition.setByX((-1) * bot.getSize());
                     transition.play();
                     try {
@@ -218,11 +244,14 @@ public class Bot extends MyPlayer {
         return direction;
     }
 
-    public Position getBotPosition() {
+    @Override
+    public Position getPosition() {
         return position;
     }
 
     public Map getMap() {
         return map;
     }
+
+
 }

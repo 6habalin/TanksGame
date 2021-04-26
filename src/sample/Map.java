@@ -12,26 +12,28 @@ public class Map {
     public Map(String input) throws InvalidMapException, FileNotFoundException {
         File fileMap = new File("src/sample/" + input);
         Scanner scan = new Scanner(fileMap);
+        int counter = 0;
         int size = Integer.parseInt(scan.next());
-        if (size == 0) {
-            throw new InvalidMapException("Map size can not be zero");
-        } else {
+        List<Character> list = new ArrayList<Character>();
+
+        if (size != 0) {
             map = new char[size][size];
-            List<Character> list = new ArrayList<Character>();
             while (scan.hasNext()) {
                 list.add(scan.next().charAt(0));
             }
             if (list.size() != size * size) {
                 throw new InvalidMapException("Not enough map elements");
             }
-            int counter = 0;
+
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
-                    char temp = list.get(counter);
-                    map[i][j] = temp;
+                    map[i][j] = list.get(counter);
                     counter++;
                 }
             }
+
+        } else {
+            throw new InvalidMapException("Map size can not be zero");
         }
     }
 

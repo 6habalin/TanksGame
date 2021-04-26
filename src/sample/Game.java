@@ -17,6 +17,10 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public class Game {
     private final Map map;
@@ -28,16 +32,26 @@ public class Game {
     Bot bot1;
     Bot bot2;
     Bot bot3;
-    Bot[] botArray;
+    List<Bot> botList;
+    BotBullet bot1Bullet;
+    BotBullet bot2Bullet;
+    BotBullet bot3Bullet;
+
 
     Game(Map map, Tank tank) {
         this.tank = tank;
         this.map = map;
-        bullet = new Bullet(map, tank.getTankDirection());
         bot1 = new Bot(map);
         bot2 = new Bot(map);
         bot3 = new Bot(map);
-        botArray = new Bot[]{bot1, bot2, bot3};
+        bot1Bullet = new BotBullet(map, bot1.getBotDirection(), bot1, fieldPane, tank);
+        bot2Bullet = new BotBullet(map, bot2.getBotDirection(), bot2, fieldPane, tank);
+        bot3Bullet = new BotBullet(map, bot3.getBotDirection(), bot3, fieldPane, tank);
+        botList = new ArrayList<Bot>();
+        botList.add(bot1);
+        botList.add(bot2);
+        botList.add(bot3);
+        bullet = new Bullet(map, tank.getTankDirection(), botList);
     }
 
     public VBox startVBox(Stage primaryStage) throws FileNotFoundException {
@@ -56,21 +70,29 @@ public class Game {
         start.setAlignment(Pos.CENTER);
         start.getChildren().addAll(text, startButton);
         sceneMain = new Scene(gameVBox(), 650, 600);
-        startButton.setOnMouseClicked(e -> {
-            primaryStage.setScene(sceneMain);
-            Runnable runnable1 = new BotMovement(bot1);
-            Thread threadBot1 = new Thread(runnable1);
-            threadBot1.start();
+        addPlayerActions();
+        addBotsActions(startButton, primaryStage);
+        return start;
+    }
 
-            Runnable runnable2 = new BotMovement(bot2);
-            Thread threadBot2 = new Thread(runnable2);
-            threadBot2.start();
+    public BorderPane gameVBox() {
+        BorderPane pane = new BorderPane();
+        pane.setMaxSize(650, 600);
+        pane.setMinSize(650, 600);
+        Text text = new Text("Lives:\n" + tank.getTankLives());
+        text.setFont(Font.font("Verdana", FontWeight.BOLD, 18));
+        text.setTextAlignment(TextAlignment.CENTER);
+        fieldPane.setMaxSize(500, 500);
+        fieldPane.setMinSize(500, 500);
+        pane.setCenter(fieldPane);
+        pane.setRight(text);
+        fieldPane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        pane.setBackground(new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
+        addElements();
+        return pane;
+    }
 
-            Runnable runnable3 = new BotMovement(bot3);
-            Thread threadBot3 = new Thread(runnable3);
-            threadBot3.start();
-        });
-
+    public void addPlayerActions(){
         sceneMain.setOnKeyPressed(e -> {
             Runnable movement = null;
             switch (e.getCode()) {
@@ -91,7 +113,7 @@ public class Game {
                     movement = new TankMovement(tank, "right");
                     break;
                 case SPACE:
-                    bullet.fire(tank, fieldPane, botArray);
+                    bullet.fire(tank, fieldPane);
                     System.out.println("Fire!");
                     break;
             }
@@ -103,27 +125,34 @@ public class Game {
         });
         sceneMain.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
-                bullet.fire(tank, fieldPane, botArray);
+                bullet.fire(tank, fieldPane);
                 System.out.println("Fire!");
             }
         });
-
-
-        return start;
     }
 
-    public BorderPane gameVBox() {
-        BorderPane pane = new BorderPane();
-        pane.setMaxSize(650, 600);
-        pane.setMinSize(650, 600);
-        Text text = new Text("Lives:\n" + tank.getTankLives());
-        text.setFont(Font.font("Verdana", FontWeight.BOLD, 18));
-        text.setTextAlignment(TextAlignment.CENTER);
-        fieldPane.setMaxSize(500, 500);
-        fieldPane.setMinSize(500, 500);
-        pane.setCenter(fieldPane);
-        pane.setRight(text);
-        fieldPane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+    public void addBotsActions(ImageView startButton, Stage primaryStage){
+        startButton.setOnMouseClicked(e -> {
+            primaryStage.setScene(sceneMain);
+            Runnable runnable1 = new BotMovement(bot1, tank);
+            Thread threadBot1 = new Thread(runnable1);
+            threadBot1.start();
+
+            Runnable runnable2 = new BotMovement(bot2, tank);
+            Thread threadBot2 = new Thread(runnable2);
+            threadBot2.start();
+
+            Runnable runnable3 = new BotMovement(bot3, tank);
+            Thread threadBot3 = new Thread(runnable3);
+            threadBot3.start();
+
+            bot1Bullet.start();
+            bot2Bullet.start();
+            bot3Bullet.start();
+        });
+    }
+
+    public void addElements(){
         barriers.setSize(map.getSize());
         tank.setSize(barriers.getSize());
         bot1.setSize(barriers.getSize());
@@ -153,11 +182,9 @@ public class Game {
                 }
             }
         }
-        fieldPane.add(bot1.getBotTank(), bot1.getBotPosition().getX(), bot1.getBotPosition().getY());
-        fieldPane.add(bot2.getBotTank(), bot2.getBotPosition().getX(), bot2.getBotPosition().getY());
-        fieldPane.add(bot3.getBotTank(), bot3.getBotPosition().getX(), bot3.getBotPosition().getY());
-        pane.setBackground(new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
-        return pane;
+        fieldPane.add(bot1.getBotTank(), bot1.getPosition().getX(), bot1.getPosition().getY());
+        fieldPane.add(bot2.getBotTank(), bot2.getPosition().getX(), bot2.getPosition().getY());
+        fieldPane.add(bot3.getBotTank(), bot3.getPosition().getX(), bot3.getPosition().getY());
     }
 
 }
