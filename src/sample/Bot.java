@@ -172,31 +172,6 @@ public class Bot implements Player {
         }
     }
 
-    @Override
-    public void moveRight() {
-
-    }
-
-    @Override
-    public void moveLeft() {
-
-    }
-
-    @Override
-    public void moveUp() {
-
-    }
-
-    @Override
-    public void moveDown() {
-
-    }
-
-    @Override
-    public void setMap(Map map) {
-
-    }
-
     public void moveLeft(Bot bot) {
         int x = position.getY();
         int y = position.getX();
@@ -233,6 +208,31 @@ public class Bot implements Player {
                     break;
             }
         }
+    }
+
+    @Override
+    public void moveRight() {
+
+    }
+
+    @Override
+    public void moveLeft() {
+
+    }
+
+    @Override
+    public void moveUp() {
+
+    }
+
+    @Override
+    public void moveDown() {
+
+    }
+
+    @Override
+    public void setMap(Map map) {
+        this.map = map;
     }
 
     private void setTankImage(File file) {

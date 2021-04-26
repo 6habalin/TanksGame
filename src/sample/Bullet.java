@@ -8,7 +8,6 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Bullet {
@@ -108,7 +107,7 @@ public class Bullet {
     }
 
     public void fireDown(Tank tank, GridPane fieldPane) {
-        if (y < barriers.length && barriers[y + 1][x] != 9) {
+        if (y < barriers.length - 1 && barriers[y + 1][x] != 9) {
             int counter = 1;
             Bullet bullet = new Bullet(map, tank.getTankDirection(), botList);
             fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
@@ -185,7 +184,7 @@ public class Bullet {
     }
 
     public void fireRight(Tank tank, GridPane fieldPane) {
-        if (x < barriers.length && barriers[y][x + 1] != 9) {
+        if (x < barriers.length - 1 && barriers[y][x + 1] != 9) {
             int counter = 1;
             Bullet bullet = new Bullet(map, tank.getTankDirection(), botList);
             fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());

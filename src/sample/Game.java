@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,9 +19,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class Game {
     private final Map map;
@@ -29,28 +31,13 @@ public class Game {
     final GridPane fieldPane = new GridPane();
     final Barriers barriers = new Barriers();
     Bullet bullet;
-    Bot bot1;
-    Bot bot2;
-    Bot bot3;
-    List<Bot> botList;
-    BotBullet bot1Bullet;
-    BotBullet bot2Bullet;
-    BotBullet bot3Bullet;
+    Bot bot;
+    List<Bot> botList = new ArrayList<Bot>();
 
 
     Game(Map map, Tank tank) {
         this.tank = tank;
         this.map = map;
-        bot1 = new Bot(map);
-        bot2 = new Bot(map);
-        bot3 = new Bot(map);
-        bot1Bullet = new BotBullet(map, bot1.getBotDirection(), bot1, fieldPane, tank);
-        bot2Bullet = new BotBullet(map, bot2.getBotDirection(), bot2, fieldPane, tank);
-        bot3Bullet = new BotBullet(map, bot3.getBotDirection(), bot3, fieldPane, tank);
-        botList = new ArrayList<Bot>();
-        botList.add(bot1);
-        botList.add(bot2);
-        botList.add(bot3);
         bullet = new Bullet(map, tank.getTankDirection(), botList);
     }
 
@@ -92,7 +79,7 @@ public class Game {
         return pane;
     }
 
-    public void addPlayerActions(){
+    public void addPlayerActions() {
         sceneMain.setOnKeyPressed(e -> {
             Runnable movement = null;
             switch (e.getCode()) {
@@ -131,33 +118,42 @@ public class Game {
         });
     }
 
-    public void addBotsActions(ImageView startButton, Stage primaryStage){
+    public void addBotsActions(ImageView startButton, Stage primaryStage) {
         startButton.setOnMouseClicked(e -> {
             primaryStage.setScene(sceneMain);
-            Runnable runnable1 = new BotMovement(bot1, tank);
-            Thread threadBot1 = new Thread(runnable1);
-            threadBot1.start();
-
-            Runnable runnable2 = new BotMovement(bot2, tank);
-            Thread threadBot2 = new Thread(runnable2);
-            threadBot2.start();
-
-            Runnable runnable3 = new BotMovement(bot3, tank);
-            Thread threadBot3 = new Thread(runnable3);
-            threadBot3.start();
-
-            bot1Bullet.start();
-            bot2Bullet.start();
-            bot3Bullet.start();
+            bot = new Bot(map);
+            bot.setSize(barriers.getSize());
+            BotBullet botBullet = new BotBullet(map, bot.getBotDirection(), bot, fieldPane, tank);
+            fieldPane.add(bot.getBotTank(), bot.getPosition().getX(), bot.getPosition().getY());
+            Runnable runnable = new BotMovement(bot, tank);
+            Thread threadBot = new Thread(runnable);
+            threadBot.start();
+            botBullet.start();
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Bot newBot = new Bot(map);
+                    newBot.setSize(barriers.getSize());
+                    BotBullet botBullet = new BotBullet(map, newBot.getBotDirection(), newBot, fieldPane, tank);
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            fieldPane.add(newBot.getBotTank(), newBot.getPosition().getX(), newBot.getPosition().getY());
+                        }
+                    });
+                    Runnable runnable = new BotMovement(newBot, tank);
+                    Thread threadBot = new Thread(runnable);
+                    threadBot.start();
+                    botBullet.start();
+                }
+            }, 20000, 20000);
         });
     }
 
-    public void addElements(){
+    public void addElements() {
         barriers.setSize(map.getSize());
         tank.setSize(barriers.getSize());
-        bot1.setSize(barriers.getSize());
-        bot2.setSize(barriers.getSize());
-        bot3.setSize(barriers.getSize());
         for (int i = 0; i < map.getSize(); i++) {
             for (int j = 0; j < map.getSize(); j++) {
                 switch (map.getValueAt(i, j)) {
@@ -182,9 +178,6 @@ public class Game {
                 }
             }
         }
-        fieldPane.add(bot1.getBotTank(), bot1.getPosition().getX(), bot1.getPosition().getY());
-        fieldPane.add(bot2.getBotTank(), bot2.getPosition().getX(), bot2.getPosition().getY());
-        fieldPane.add(bot3.getBotTank(), bot3.getPosition().getX(), bot3.getPosition().getY());
     }
 
 }

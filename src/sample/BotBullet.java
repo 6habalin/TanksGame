@@ -102,7 +102,7 @@ public class BotBullet implements Runnable{
     }
 
     public void fireDown(Bot bot, GridPane fieldPane, Tank tank) {
-        if (y < barriers.length && barriers[y + 1][x] != 9) {
+        if (y < barriers.length - 1 && barriers[y + 1][x] != 9) {
             int counter = 1;
             BotBullet bullet = new BotBullet(map, bot.getBotDirection(), bot, fieldPane, tank);
             Platform.runLater(new Runnable() {
@@ -204,7 +204,7 @@ public class BotBullet implements Runnable{
     }
 
     public void fireRight(Bot bot, GridPane fieldPane, Tank tank) {
-        if (x < barriers.length && barriers[y][x + 1] != 9) {
+        if (x < barriers.length - 1 && barriers[y][x + 1] != 9) {
             int counter = 1;
             BotBullet bullet = new BotBullet(map, bot.getBotDirection(), bot, fieldPane, tank);
             Platform.runLater(new Runnable() {
