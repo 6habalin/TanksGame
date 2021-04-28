@@ -49,6 +49,7 @@ public class Bot implements Player {
         while (true) {
             if (map.getValueAt(randJ, randI) == '0') {
                 position = new Position(randI, randJ);
+                map.setElement('M', randJ, randI);
                 break;
             } else {
                 randI = rand.nextInt(map.getSize());
@@ -65,27 +66,19 @@ public class Bot implements Player {
         if (x - 1 >= 0) {
             switch (map.getValueAt(x - 1, y)) {
                 case 'T':
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            bot.getBotTank().toBack();
-                        }
-                    });
+                    Platform.runLater(() -> bot.getBotTank().toBack());
                 case '0':
                 case 'P':
                     if (map.getValueAt(x - 1, y) != 'T') {
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                bot.getBotTank().toFront();
-                            }
-                        });
+                        Platform.runLater(() -> bot.getBotTank().toFront());
                     }
                     transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
                     transition.setByY((-1) * getSize());
                     transition.play();
                     try {
                         Thread.sleep(790);
+                        map.setElement('0', x, y);
+                        map.setElement('M', x - 1, y);
                         position.setY(x - 1);
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
@@ -103,27 +96,19 @@ public class Bot implements Player {
         if (y + 1 <= map.getSize() - 1) {
             switch (map.getValueAt(x, y + 1)) {
                 case 'T':
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            bot.getBotTank().toBack();
-                        }
-                    });
+                    Platform.runLater(() -> bot.getBotTank().toBack());
                 case '0':
                 case 'P':
                     if (map.getValueAt(x, y + 1) != 'T') {
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                bot.getBotTank().toFront();
-                            }
-                        });
+                        Platform.runLater(() -> bot.getBotTank().toFront());
                     }
                     transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
                     transition.setByX(bot.getSize());
                     transition.play();
                     try {
                         Thread.sleep(790);
+                        map.setElement('0', x, y);
+                        map.setElement('M', x, y + 1);
                         position.setX(y + 1);
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
@@ -141,27 +126,19 @@ public class Bot implements Player {
         if (x + 1 <= map.getSize() - 1) {
             switch (map.getValueAt(x + 1, y)) {
                 case 'T':
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            bot.getBotTank().toBack();
-                        }
-                    });
+                    Platform.runLater(() -> bot.getBotTank().toBack());
                 case '0':
                 case 'P':
                     if (map.getValueAt(x + 1, y) != 'T') {
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                bot.getBotTank().toFront();
-                            }
-                        });
+                        Platform.runLater(() -> bot.getBotTank().toFront());
                     }
                     transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
                     transition.setByY(bot.getSize());
                     transition.play();
                     try {
                         Thread.sleep(790);
+                        map.setElement('0', x, y);
+                        map.setElement('M', x + 1, y);
                         position.setY(x + 1);
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
@@ -180,27 +157,19 @@ public class Bot implements Player {
         if (y - 1 >= 0) {
             switch (map.getValueAt(x, y - 1)) {
                 case 'T':
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            bot.getBotTank().toBack();
-                        }
-                    });
+                    Platform.runLater(() -> bot.getBotTank().toBack());
                 case '0':
                 case 'P':
                     if (map.getValueAt(x, y - 1) != 'T') {
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                bot.getBotTank().toFront();
-                            }
-                        });
+                        Platform.runLater(() -> bot.getBotTank().toFront());
                     }
                     transition = new TranslateTransition(Duration.millis(800), bot.getBotTank());
                     transition.setByX((-1) * bot.getSize());
                     transition.play();
                     try {
                         Thread.sleep(790);
+                        map.setElement('0', x, y);
+                        map.setElement('M', x, y - 1);
                         position.setX(y - 1);
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();

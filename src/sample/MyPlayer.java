@@ -1,6 +1,8 @@
 package sample;
 
-public class MyPlayer implements Player {
+import java.io.Serializable;
+
+public class MyPlayer implements Player, Serializable {
     private Map map;
     private int mapSize = 0;
     private final Position position = new Position(0, 0);

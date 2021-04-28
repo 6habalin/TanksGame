@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Main extends Application {
 
@@ -23,7 +24,7 @@ public class Main extends Application {
             player.setMap(map);
             tank = new Tank(map);
             game = new Game(map, tank);
-        } catch (InvalidMapException e) {
+        } catch (InvalidMapException | IOException e) {
             System.out.println(e.getMessage());
             System.exit(0);
         }

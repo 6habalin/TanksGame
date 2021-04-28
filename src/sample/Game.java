@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -15,14 +16,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
+import java.io.*;
+import java.net.Socket;
+import java.util.*;
 
 public class Game {
     private final Map map;
@@ -32,13 +28,15 @@ public class Game {
     final Barriers barriers = new Barriers();
     Bullet bullet;
     Bot bot;
-    List<Bot> botList = new ArrayList<Bot>();
+    Socket socket = new Socket("localhost", 8000);
+    ObjectOutputStream toServer = new ObjectOutputStream(socket.getOutputStream());
+    ObjectInputStream fromServer = new ObjectInputStream(socket.getInputStream());
 
 
-    Game(Map map, Tank tank) {
+    Game(Map map, Tank tank) throws IOException {
         this.tank = tank;
         this.map = map;
-        bullet = new Bullet(map, tank.getTankDirection(), botList);
+        bullet = new Bullet(map, tank.getTankDirection());
     }
 
     public VBox startVBox(Stage primaryStage) throws FileNotFoundException {
@@ -54,11 +52,29 @@ public class Game {
         ImageView startButton = new ImageView(image);
         startButton.setFitWidth(200);
         startButton.setFitHeight(90);
+        Button multiplayerButton = new Button("Multiplayer");
+        multiplayerButton.setMaxHeight(90);
+        multiplayerButton.setMaxWidth(200);
+        multiplayerButton.setMinHeight(90);
+        multiplayerButton.setMinWidth(200);
         start.setAlignment(Pos.CENTER);
-        start.getChildren().addAll(text, startButton);
+        start.getChildren().addAll(text, startButton, multiplayerButton);
         sceneMain = new Scene(gameVBox(), 650, 600);
-        addPlayerActions();
-        addBotsActions(startButton, primaryStage);
+
+        startButton.setOnMouseClicked(e -> {
+            primaryStage.setScene(sceneMain);
+            addPlayerActions();
+            addBotsActions();
+        });
+        multiplayerButton.setOnMouseClicked(e -> {
+            primaryStage.setScene(sceneMain);
+            addPlayerActions();
+            try {
+                multiplayer();
+            } catch (ClassNotFoundException | IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
         return start;
     }
 
@@ -82,27 +98,38 @@ public class Game {
     public void addPlayerActions() {
         sceneMain.setOnKeyPressed(e -> {
             Runnable movement = null;
+            String action = "";
             switch (e.getCode()) {
                 case UP:
                 case W:
                     movement = new TankMovement(tank, "up");
+                    action = "up";
                     break;
                 case DOWN:
                 case S:
                     movement = new TankMovement(tank, "down");
+                    action = "down";
                     break;
                 case LEFT:
                 case A:
                     movement = new TankMovement(tank, "left");
+                    action = "left";
                     break;
                 case RIGHT:
                 case D:
                     movement = new TankMovement(tank, "right");
+                    action = "right";
                     break;
                 case SPACE:
                     bullet.fire(tank, fieldPane);
                     System.out.println("Fire!");
                     break;
+            }
+
+            try {
+                toServer.writeObject(action);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
             }
             Thread thread1 = new Thread(movement);
             if (thread1.isAlive()) {
@@ -118,37 +145,28 @@ public class Game {
         });
     }
 
-    public void addBotsActions(ImageView startButton, Stage primaryStage) {
-        startButton.setOnMouseClicked(e -> {
-            primaryStage.setScene(sceneMain);
-            bot = new Bot(map);
-            bot.setSize(barriers.getSize());
-            BotBullet botBullet = new BotBullet(map, bot.getBotDirection(), bot, fieldPane, tank);
-            fieldPane.add(bot.getBotTank(), bot.getPosition().getX(), bot.getPosition().getY());
-            Runnable runnable = new BotMovement(bot, tank);
-            Thread threadBot = new Thread(runnable);
-            threadBot.start();
-            botBullet.start();
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    Bot newBot = new Bot(map);
-                    newBot.setSize(barriers.getSize());
-                    BotBullet botBullet = new BotBullet(map, newBot.getBotDirection(), newBot, fieldPane, tank);
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            fieldPane.add(newBot.getBotTank(), newBot.getPosition().getX(), newBot.getPosition().getY());
-                        }
-                    });
-                    Runnable runnable = new BotMovement(newBot, tank);
-                    Thread threadBot = new Thread(runnable);
-                    threadBot.start();
-                    botBullet.start();
-                }
-            }, 20000, 20000);
-        });
+    public void addBotsActions() {
+        bot = new Bot(map);
+        bot.setSize(barriers.getSize());
+        BotBullet botBullet = new BotBullet(map, bot.getBotDirection(), bot, fieldPane, tank);
+        fieldPane.add(bot.getBotTank(), bot.getPosition().getX(), bot.getPosition().getY());
+        Runnable runnable = new BotMovement(bot, tank);
+        Thread threadBot = new Thread(runnable);
+        threadBot.start();
+        botBullet.start();
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Bot newBot = new Bot(map);
+                newBot.setSize(barriers.getSize());
+                BotBullet botBullet = new BotBullet(map, newBot.getBotDirection(), newBot, fieldPane, tank);
+                Platform.runLater(() -> fieldPane.add(newBot.getBotTank(), newBot.getPosition().getX(), newBot.getPosition().getY()));
+                BotMovement movement = new BotMovement(newBot, tank);
+                movement.start();
+                botBullet.start();
+            }
+        }, 20000, 20000);
     }
 
     public void addElements() {
@@ -178,6 +196,23 @@ public class Game {
                 }
             }
         }
+    }
+
+    public void multiplayer() throws IOException, ClassNotFoundException{
+
+        toServer.writeObject(map);
+        toServer.writeObject(tank.getTankPosition());
+        toServer.flush();
+        int tanksNumber = fromServer.readInt();
+
+    }
+
+    public void addPlayer() throws IOException, ClassNotFoundException {
+        Tank newTank = new Tank(map);
+        newTank.setPosition((Position) fromServer.readObject());
+        newTank.setSize(barriers.getSize());
+        map.setElement('P', newTank.getPosition().getY(), newTank.getPosition().getX());
+        fieldPane.add(newTank.getTank(), newTank.getPosition().getX(), newTank.getPosition().getY());
     }
 
 }

@@ -19,13 +19,11 @@ public class Bullet {
     private final File bullet = new File("src/sample/Images/bullet.png");
     private final Image image = new Image(bullet.toURI().toString());
     private final ImageView bulletView = new ImageView(image);
-    private final List<Bot> botList;
 
 
-    Bullet(Map map, int direction, List<Bot> botList) {
+    Bullet(Map map, int direction) {
         this.map = map;
         this.direction = direction;
-        this.botList = botList;
         barriers = new int[map.getSize()][map.getSize()];
         for (int i = 0; i < map.getSize(); i++) {
             for (int j = 0; j < map.getSize(); j++) {
@@ -51,7 +49,9 @@ public class Bullet {
         if (direction == 1) {
             x = tank.getTankPosition().getX();
             y = tank.getTankPosition().getY();
-            fireUp(tank, fieldPane);
+            if(!fireBotUp(tank, fieldPane)){
+                fireUp(tank, fieldPane);
+            }
         } else if (direction == 2) {
             x = tank.getTankPosition().getX();
             y = tank.getTankPosition().getY();
@@ -59,7 +59,9 @@ public class Bullet {
         } else if (direction == 3) {
             x = tank.getTankPosition().getX();
             y = tank.getTankPosition().getY();
-            fireDown(tank, fieldPane);
+            if(!fireBotDown(tank, fieldPane)){
+                fireDown(tank, fieldPane);
+            }
         } else if (direction == 4) {
             x = tank.getTankPosition().getX();
             y = tank.getTankPosition().getY();
@@ -70,12 +72,12 @@ public class Bullet {
     public void fireUp(Tank tank, GridPane fieldPane) {
         if (y > 0 && barriers[y - 1][x] != 9) {
             int counter = 1;
-            Bullet bullet = new Bullet(map, tank.getTankDirection(), botList);
+            Bullet bullet = new Bullet(map, tank.getTankDirection());
             fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             ImageView v = new Barriers().getBlack(tank.getSize());
-            killBotUpDown(tank, fieldPane, "Up");
+
             int i = y - 1;
             while (i >= 0) {
                 if (barriers[i][x] == 0) {
@@ -109,11 +111,10 @@ public class Bullet {
     public void fireDown(Tank tank, GridPane fieldPane) {
         if (y < barriers.length - 1 && barriers[y + 1][x] != 9) {
             int counter = 1;
-            Bullet bullet = new Bullet(map, tank.getTankDirection(), botList);
+            Bullet bullet = new Bullet(map, tank.getTankDirection());
             fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
-            killBotUpDown(tank, fieldPane, "Down");
             int i = y + 1;
             while (i < barriers.length) {
                 if (barriers[i][x] == 0) {
@@ -148,7 +149,7 @@ public class Bullet {
     public void fireLeft(Tank tank, GridPane fieldPane) {
         if (x > 0 && barriers[y][x - 1] != 9) {
             int counter = 1;
-            Bullet bullet = new Bullet(map, tank.getTankDirection(), botList);
+            Bullet bullet = new Bullet(map, tank.getTankDirection());
             fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
@@ -186,7 +187,7 @@ public class Bullet {
     public void fireRight(Tank tank, GridPane fieldPane) {
         if (x < barriers.length - 1 && barriers[y][x + 1] != 9) {
             int counter = 1;
-            Bullet bullet = new Bullet(map, tank.getTankDirection(), botList);
+            Bullet bullet = new Bullet(map, tank.getTankDirection());
             fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
@@ -227,44 +228,84 @@ public class Bullet {
         return bulletView;
     }
 
-    public void killBotUpDown(Tank tank, GridPane fieldPane, String destination) {
-        ImageView v = new Barriers().getBlack(tank.getSize());
-        switch (destination) {
-            case "Up":
-                for (int i = 0; i < botList.size(); i++) {
-                    int j = y - 1;
-                    while (j >= 0) {
-                        if (botList.get(i).getPosition().equals(new Position(x, j))) {
-                            fieldPane.add(v, x, j);
-                            tank.getTank().toFront();
-                            botList.remove(botList.get(i));
-                            for (Bot value : botList) {
-                                value.getBotTank().toFront();
-                            }
+
+    public boolean fireBotUp(Tank tank, GridPane fieldPane) {
+        boolean cond = false;
+        if(y > 0){
+            Map bots = tank.getMap();
+            int counter = 1;
+            Bullet bullet = new Bullet(map, tank.getTankDirection());
+            TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
+            PauseTransition pause = new PauseTransition(Duration.millis(100));
+            ImageView v = new Barriers().getBlack(tank.getSize());
+
+            int i = y - 1;
+            while (i >= 0) {
+                if (bots.getValueAt(i, x) == '0') {
+                    counter++;
+                    i--;
+                } else if (bots.getValueAt(i, x) == 'M') {
+                    fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
+                    if (bots.getValueAt(i, x) != '0') {
+                        bots.setElement('0', i, x);
+                        fieldPane.add(v, x, i);
+                        tank.getTank().toFront();
+                        if (counter > 1) {
+                            counter--;
                         }
-                        j--;
+                        transition.setByY((-1) * counter * tank.getSize() - 25);
+                        transition.play();
+                        pause.setOnFinished(e -> bullet.getBulletView(tank).setVisible(false));
+                        pause.play();
+                        cond = true;
                     }
+                    break;
+                } else {
+                    break;
                 }
-                break;
-            case "Down":
-                for (int i = 0; i < botList.size(); i++) {
-                    int j = y + 1;
-                    while (j < barriers.length){
-                        if (botList.get(i).getPosition().equals(new Position(x, j))) {
-                            fieldPane.add(v, x, j);
-                            tank.getTank().toFront();
-                            botList.remove(botList.get(i));
-                            for (Bot value : botList) {
-                                value.getBotTank().toFront();
-                            }
-                        }
-                        j++;
-                    }
-                }
-                break;
+            }
         }
+        return cond;
     }
 
+    public boolean fireBotDown(Tank tank, GridPane fieldPane){
+        boolean cond = false;
+        if(y < barriers.length - 1){
+            Map bots = tank.getMap();
+            int counter = 1;
+            Bullet bullet = new Bullet(map, tank.getTankDirection());
+            TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
+            PauseTransition pause = new PauseTransition(Duration.millis(100));
+            ImageView v = new Barriers().getBlack(tank.getSize());
+
+            int i = y + 1;
+            while(i < barriers.length){
+                if (bots.getValueAt(i, x) == '0') {
+                    counter++;
+                    i++;
+                } else if (bots.getValueAt(i, x) == 'M') {
+                    fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
+                    if (bots.getValueAt(i, x) != '0') {
+                        bots.setElement('0', i, x);
+                        fieldPane.add(v, x, i);
+                        tank.getTank().toFront();
+                        if (counter > 1) {
+                            counter--;
+                        }
+                        transition.setByY(counter * tank.getSize() - 25);
+                        transition.play();
+                        pause.setOnFinished(e -> bullet.getBulletView(tank).setVisible(false));
+                        pause.play();
+                        cond = true;
+                    }
+                    break;
+                } else {
+                    break;
+                }
+            }
+        }
+        return cond;
+    }
 
 }
 

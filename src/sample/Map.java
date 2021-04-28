@@ -2,14 +2,15 @@ package sample;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Map {
+public class Map implements Serializable {
     private final char[][] map;
 
-    public Map(String input) throws InvalidMapException, FileNotFoundException {
+    Map(String input) throws InvalidMapException, FileNotFoundException {
         File fileMap = new File("src/sample/" + input);
         Scanner scan = new Scanner(fileMap);
         int counter = 0;
