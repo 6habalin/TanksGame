@@ -2,15 +2,13 @@ package sample;
 
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.io.Serializable;
 
-public class Tank extends MyPlayer implements Serializable{
+public class Tank extends MyPlayer {
     private final File tankUp = new File("src/sample/Images/tankUp.png");
     private final File tankDown = new File("src/sample/Images/tankDown.png");
     private final File tankLeft = new File("src/sample/Images/tankLeft.png");

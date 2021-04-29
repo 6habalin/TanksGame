@@ -21,7 +21,7 @@ import java.net.Socket;
 import java.util.*;
 
 public class Game {
-    private final Map map;
+    private Map map;
     static Scene sceneMain;
     private final Tank tank;
     final GridPane fieldPane = new GridPane();
@@ -29,8 +29,9 @@ public class Game {
     Bullet bullet;
     Bot bot;
     Socket socket = new Socket("localhost", 8000);
-    ObjectOutputStream toServer = new ObjectOutputStream(socket.getOutputStream());
-    ObjectInputStream fromServer = new ObjectInputStream(socket.getInputStream());
+    ObjectOutputStream toServer = null;
+    ObjectInputStream fromServer = null;
+    Tank newTank;
 
 
     Game(Map map, Tank tank) throws IOException {
@@ -59,15 +60,33 @@ public class Game {
         multiplayerButton.setMinWidth(200);
         start.setAlignment(Pos.CENTER);
         start.getChildren().addAll(text, startButton, multiplayerButton);
-        sceneMain = new Scene(gameVBox(), 650, 600);
 
         startButton.setOnMouseClicked(e -> {
+            try {
+                sceneMain = new Scene(gameVBox(1), 650, 600);
+            } catch (IOException | ClassNotFoundException ioException) {
+                ioException.printStackTrace();
+            }
             primaryStage.setScene(sceneMain);
             addPlayerActions();
             addBotsActions();
         });
+
         multiplayerButton.setOnMouseClicked(e -> {
+            try {
+                toServer = new ObjectOutputStream(socket.getOutputStream());
+                fromServer = new ObjectInputStream(socket.getInputStream());
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            try {
+                sceneMain = new Scene(gameVBox(2), 650, 600);
+            } catch (IOException | ClassNotFoundException ioException) {
+                ioException.printStackTrace();
+            }
+
             primaryStage.setScene(sceneMain);
+
             addPlayerActions();
             try {
                 multiplayer();
@@ -78,7 +97,7 @@ public class Game {
         return start;
     }
 
-    public BorderPane gameVBox() {
+    public BorderPane gameVBox(int n) throws IOException, ClassNotFoundException {
         BorderPane pane = new BorderPane();
         pane.setMaxSize(650, 600);
         pane.setMinSize(650, 600);
@@ -91,7 +110,11 @@ public class Game {
         pane.setRight(text);
         fieldPane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setBackground(new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
-        addElements();
+        if (n == 1) {
+            addElements();
+        } else if (n == 2) {
+            addElementsMultiplayer();
+        }
         return pane;
     }
 
@@ -122,6 +145,7 @@ public class Game {
                     break;
                 case SPACE:
                     bullet.fire(tank, fieldPane);
+                    action = "fire";
                     System.out.println("Fire!");
                     break;
             }
@@ -198,21 +222,82 @@ public class Game {
         }
     }
 
-    public void multiplayer() throws IOException, ClassNotFoundException{
+    public void multiplayer() throws IOException, ClassNotFoundException {
+        Runnable runnable = () -> {
+            while (true) {
+                String action = null;
+                try {
+                    action = (String) fromServer.readObject();
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Read " + action);
+                switch (Objects.requireNonNull(action)) {
+                    case "up":
+                        newTank.moveUp(newTank);
+                        break;
+                    case "down":
+                        newTank.moveDown(newTank);
+                        break;
+                    case "left":
+                        newTank.moveLeft(newTank);
+                        break;
+                    case "right":
+                        newTank.moveRight(newTank);
+                        break;
+                    case "fire":
+                        Platform.runLater(() -> bullet.fire(newTank, fieldPane));
+                        break;
+                }
+            }
+        };
+        Thread t = new Thread(runnable);
+        t.start();
+    }
+
+    public void addPlayer(Map chosenMap) throws IOException, ClassNotFoundException {
+        newTank = new Tank(chosenMap);
+        newTank.setPosition((Position) fromServer.readObject());
+        newTank.setSize(barriers.getSize());
+        //map.setElement('P', newTank.getPosition().getY(), newTank.getPosition().getX());
+        fieldPane.add(newTank.getTank(), newTank.getTankPosition().getX(), newTank.getTankPosition().getY());
+    }
+
+    public void addElementsMultiplayer() throws IOException, ClassNotFoundException {
 
         toServer.writeObject(map);
         toServer.writeObject(tank.getTankPosition());
         toServer.flush();
-        int tanksNumber = fromServer.readInt();
+        Map chosenMap = (Map) fromServer.readObject();
+        tank.setPosition((Position) fromServer.readObject());
 
-    }
-
-    public void addPlayer() throws IOException, ClassNotFoundException {
-        Tank newTank = new Tank(map);
-        newTank.setPosition((Position) fromServer.readObject());
-        newTank.setSize(barriers.getSize());
-        map.setElement('P', newTank.getPosition().getY(), newTank.getPosition().getX());
-        fieldPane.add(newTank.getTank(), newTank.getPosition().getX(), newTank.getPosition().getY());
+        barriers.setSize(chosenMap.getSize());
+        tank.setSize(barriers.getSize());
+        for (int i = 0; i < chosenMap.getSize(); i++) {
+            for (int j = 0; j < chosenMap.getSize(); j++) {
+                switch (chosenMap.getValueAt(i, j)) {
+                    case 'S':
+                        fieldPane.add(barriers.getSteel(), j, i);
+                        break;
+                    case 'B':
+                        fieldPane.add(barriers.getBrick(), j, i);
+                        break;
+                    case 'W':
+                        fieldPane.add(barriers.getWater(), j, i);
+                        break;
+                    case 'T':
+                        fieldPane.add(barriers.getTrees(), j, i);
+                        break;
+                    case '0':
+                        fieldPane.add(barriers.getTransparent(), j, i);
+                        break;
+                    case 'P':
+                        fieldPane.add(tank.getTank(), tank.getTankPosition().getX(), tank.getTankPosition().getY());
+                        break;
+                }
+            }
+        }
+        addPlayer(chosenMap);
     }
 
 }
