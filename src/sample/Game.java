@@ -26,13 +26,14 @@ public class Game {
     private final Tank tank;
     final GridPane fieldPane = new GridPane();
     final Barriers barriers = new Barriers();
-    Bullet bullet;
-    Bot bot;
-    Socket socket = new Socket("localhost", 8000);
-    ObjectOutputStream toServer = null;
-    ObjectInputStream fromServer = null;
-    Tank newTank;
+    private Bullet bullet;
+    private Bot bot;
+    private final Socket socket = new Socket("localhost", 8000);
+    private ObjectOutputStream toServer = null;
+    private ObjectInputStream fromServer = null;
+    private Tank newTank;
 
+    //TODO bullet doesn't make any damage to tanks(bots, other players)
 
     Game(Map map, Tank tank) throws IOException {
         this.tank = tank;
@@ -231,7 +232,6 @@ public class Game {
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-                System.out.println("Read " + action);
                 switch (Objects.requireNonNull(action)) {
                     case "up":
                         newTank.moveUp(newTank);
@@ -246,7 +246,8 @@ public class Game {
                         newTank.moveRight(newTank);
                         break;
                     case "fire":
-                        Platform.runLater(() -> bullet.fire(newTank, fieldPane));
+                        Platform.runLater(() -> bullet.fireOnline(newTank, fieldPane));
+                        newTank.setTankMap(map);
                         break;
                 }
             }
@@ -265,7 +266,6 @@ public class Game {
 
     public void addElementsMultiplayer() throws IOException, ClassNotFoundException {
 
-        toServer.writeObject(map);
         toServer.writeObject(tank.getTankPosition());
         toServer.flush();
         Map chosenMap = (Map) fromServer.readObject();

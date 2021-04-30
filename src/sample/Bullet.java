@@ -8,13 +8,12 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.util.List;
 
 public class Bullet {
     private int x = 0;
     private int y = 0;
     private int direction;
-    private final Map map;
+    private Map map;
     private int[][] barriers;
     private final File bullet = new File("src/sample/Images/bullet.png");
     private final Image image = new Image(bullet.toURI().toString());
@@ -49,7 +48,7 @@ public class Bullet {
         if (direction == 1) {
             x = tank.getTankPosition().getX();
             y = tank.getTankPosition().getY();
-            if(!fireBotUp(tank, fieldPane)){
+            if (!fireBotUp(tank, fieldPane)) {
                 fireUp(tank, fieldPane);
             }
         } else if (direction == 2) {
@@ -59,7 +58,7 @@ public class Bullet {
         } else if (direction == 3) {
             x = tank.getTankPosition().getX();
             y = tank.getTankPosition().getY();
-            if(!fireBotDown(tank, fieldPane)){
+            if (!fireBotDown(tank, fieldPane)) {
                 fireDown(tank, fieldPane);
             }
         } else if (direction == 4) {
@@ -231,7 +230,7 @@ public class Bullet {
 
     public boolean fireBotUp(Tank tank, GridPane fieldPane) {
         boolean cond = false;
-        if(y > 0){
+        if (y > 0) {
             Map bots = tank.getMap();
             int counter = 1;
             Bullet bullet = new Bullet(map, tank.getTankDirection());
@@ -268,9 +267,9 @@ public class Bullet {
         return cond;
     }
 
-    public boolean fireBotDown(Tank tank, GridPane fieldPane){
+    public boolean fireBotDown(Tank tank, GridPane fieldPane) {
         boolean cond = false;
-        if(y < barriers.length - 1){
+        if (y < barriers.length - 1) {
             Map bots = tank.getMap();
             int counter = 1;
             Bullet bullet = new Bullet(map, tank.getTankDirection());
@@ -279,7 +278,7 @@ public class Bullet {
             ImageView v = new Barriers().getBlack(tank.getSize());
 
             int i = y + 1;
-            while(i < barriers.length){
+            while (i < barriers.length) {
                 if (bots.getValueAt(i, x) == '0') {
                     counter++;
                     i++;
@@ -305,6 +304,38 @@ public class Bullet {
             }
         }
         return cond;
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public void fireOnline(Tank tank, GridPane fieldPane) {
+        bulletView.setFitHeight(tank.getSize() - Math.round((tank.getSize() * 10.0) / 100));
+        bulletView.setFitWidth(tank.getSize() - Math.round((tank.getSize() * 10.0) / 100));
+        direction = tank.getTankDirection();
+        map = tank.getMap();
+        if (direction == 1) {
+            x = tank.getTankPosition().getX();
+            y = tank.getTankPosition().getY();
+            if (!fireBotUp(tank, fieldPane)) {
+                fireUp(tank, fieldPane);
+            }
+        } else if (direction == 2) {
+            x = tank.getTankPosition().getX();
+            y = tank.getTankPosition().getY();
+            fireRight(tank, fieldPane);
+        } else if (direction == 3) {
+            x = tank.getTankPosition().getX();
+            y = tank.getTankPosition().getY();
+            if (!fireBotDown(tank, fieldPane)) {
+                fireDown(tank, fieldPane);
+            }
+        } else if (direction == 4) {
+            x = tank.getTankPosition().getX();
+            y = tank.getTankPosition().getY();
+            fireLeft(tank, fieldPane);
+        }
     }
 
 }

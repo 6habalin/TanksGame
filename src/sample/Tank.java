@@ -17,7 +17,7 @@ public class Tank extends MyPlayer {
     private final ImageView tankView = new ImageView(image);
     private Position position;
     private int size = 0;
-    private final Map map;
+    private Map map;
     private int direction = 1;
     private int tankLives = 5;
     private TranslateTransition transition;
@@ -204,6 +204,10 @@ public class Tank extends MyPlayer {
 
     public void setPosition(Position position){
         this.position = position;
+    }
+
+    public void setTankMap(Map map){
+        this.map = map;
     }
 
 }

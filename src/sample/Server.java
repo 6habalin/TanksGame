@@ -16,6 +16,7 @@ public class Server {
 
     public static void main(String[] args) throws Exception {
 
+        map = new Map(args[0]);
         ServerSocket server = new ServerSocket(8000);
         Socket socket1 = server.accept();
         Socket socket2 = server.accept();
@@ -26,8 +27,6 @@ public class Server {
         ObjectOutputStream toClient = new ObjectOutputStream(socket1.getOutputStream());
         ObjectOutputStream toClient2 = new ObjectOutputStream(socket2.getOutputStream());
 
-        map = (Map) fromClient.readObject();
-        Map map2 = (Map) fromClient2.readObject();
         position1 = (Position) fromClient.readObject();
         position2 = (Position) fromClient2.readObject();
         position2 = getRandomPosition(map);
@@ -157,6 +156,7 @@ public class Server {
                         }
                         break;
                 }
+
                 System.out.println(position1 + " " + position2);
             }
         };
