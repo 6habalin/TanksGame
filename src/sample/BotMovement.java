@@ -1,29 +1,21 @@
 package sample;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 public class BotMovement implements Runnable {
     private final Bot bot;
-    private int direction = 1;
-    private final Random rand = new Random();
     private Thread t;
-    private final Map map;
-    private Tank tank;
+    private final Tank tank;
+    private boolean movement = false;
 
 
     BotMovement(Bot bot, Tank tank) {
         this.bot = bot;
-        direction = bot.getBotDirection();
-        map = bot.getMap();
         this.tank = tank;
     }
 
     @Override
     public void run() {
         BotMovementAlgorithm algorithm = new BotMovementAlgorithm(bot, tank);
-        while(true){
+        while(!movement){
             algorithm.path();
         }
     }
@@ -33,6 +25,17 @@ public class BotMovement implements Runnable {
             t = new Thread(this);
             t.start();
         }
+    }
+
+    public void stop() throws InterruptedException {
+        if(t != null){
+            t.interrupt();
+        }
+    }
+
+    public void stopMovement(){
+        movement = true;
+        t.interrupt();
     }
 
 }

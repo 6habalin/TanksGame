@@ -76,12 +76,12 @@ public class Bot implements Player {
                     transition.setByY((-1) * getSize());
                     transition.play();
                     try {
-                        Thread.sleep(790);
                         map.setElement('0', x, y);
                         map.setElement('M', x - 1, y);
                         position.setY(x - 1);
+                        Thread.sleep(790);
                     } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
                     break;
             }
@@ -106,12 +106,12 @@ public class Bot implements Player {
                     transition.setByX(bot.getSize());
                     transition.play();
                     try {
-                        Thread.sleep(790);
                         map.setElement('0', x, y);
                         map.setElement('M', x, y + 1);
                         position.setX(y + 1);
+                        Thread.sleep(790);
                     } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
                     break;
             }
@@ -136,12 +136,12 @@ public class Bot implements Player {
                     transition.setByY(bot.getSize());
                     transition.play();
                     try {
-                        Thread.sleep(790);
                         map.setElement('0', x, y);
                         map.setElement('M', x + 1, y);
                         position.setY(x + 1);
+                        Thread.sleep(790);
                     } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
                     break;
 
@@ -167,12 +167,12 @@ public class Bot implements Player {
                     transition.setByX((-1) * bot.getSize());
                     transition.play();
                     try {
-                        Thread.sleep(790);
                         map.setElement('0', x, y);
                         map.setElement('M', x, y - 1);
                         position.setX(y - 1);
+                        Thread.sleep(790);
                     } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
                     break;
             }
@@ -211,10 +211,6 @@ public class Bot implements Player {
 
     public int getBotDirection() {
         return direction;
-    }
-
-    public void setBotDirection(int direction){
-        this.direction = direction;
     }
 
     @Override

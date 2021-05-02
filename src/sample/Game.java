@@ -21,24 +21,22 @@ import java.net.Socket;
 import java.util.*;
 
 public class Game {
-    private Map map;
+    private final Map map;
     static Scene sceneMain;
     private final Tank tank;
     final GridPane fieldPane = new GridPane();
     final Barriers barriers = new Barriers();
-    private Bullet bullet;
-    private Bot bot;
+    private final Bullet bullet;
     private Socket socket;
     private ObjectOutputStream toServer = null;
     private ObjectInputStream fromServer = null;
     private Tank newTank;
     private boolean multiplayer = false;
+    private List<Bot> botList = new ArrayList<Bot>();
+    private List<BotMovement> botMovementList = new ArrayList<BotMovement>();
+    private List<BotBullet> botBulletList = new ArrayList<BotBullet>();
 
-    //TODO bullet doesn't make any damage to tanks(bots, other players)
-    //TODO implement left-hand rule for bots intelligence
-    //TODO implement multiple online players
-
-    Game(Map map, Tank tank) throws IOException {
+    Game(Map map, Tank tank) {
         this.tank = tank;
         this.map = map;
         bullet = new Bullet(map, tank.getTankDirection());
@@ -150,7 +148,8 @@ public class Game {
                     action = "right";
                     break;
                 case SPACE:
-                    bullet.fire(tank, fieldPane);
+                    //add multiplayer extension
+                    bullet.fire(tank, fieldPane, botList, botMovementList, botBulletList);
                     action = "fire";
                     System.out.println("Fire!");
                     break;
@@ -171,21 +170,26 @@ public class Game {
         });
         sceneMain.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
-                bullet.fire(tank, fieldPane);
+                bullet.fire(tank, fieldPane, botList, botMovementList, botBulletList);
                 System.out.println("Fire!");
             }
         });
     }
 
     public void addBotsActions() {
-        bot = new Bot(map);
+        Bot bot = new Bot(map);
         bot.setSize(barriers.getSize());
         BotBullet botBullet = new BotBullet(map, bot.getBotDirection(), bot, fieldPane, tank);
         fieldPane.add(bot.getBotTank(), bot.getPosition().getX(), bot.getPosition().getY());
-        Runnable runnable = new BotMovement(bot, tank);
-        Thread threadBot = new Thread(runnable);
-        threadBot.start();
+//        Runnable runnable = new BotMovement(bot, tank);
+//        Thread threadBot = new Thread(runnable);
+        BotMovement bMovement = new BotMovement(bot, tank);
+        //threadBot.start();
+        bMovement.start();
         botBullet.start();
+        botList.add(bot);
+        botMovementList.add(bMovement);
+        botBulletList.add(botBullet);
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -197,6 +201,9 @@ public class Game {
                 BotMovement movement = new BotMovement(newBot, tank);
                 movement.start();
                 botBullet.start();
+                botList.add(bot);
+                botMovementList.add(movement);
+                botBulletList.add(botBullet);
             }
         }, 20000, 20000);
     }
@@ -306,5 +313,4 @@ public class Game {
         }
         addPlayer(chosenMap);
     }
-
 }
