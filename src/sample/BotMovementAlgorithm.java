@@ -7,12 +7,12 @@ import java.util.List;
 
 public class BotMovementAlgorithm {
     private int direction;
-    private Map map;
-    private Bot bot;
-    private Tank tank;
-    private Position position;
-    private List<Character> barriers = new ArrayList<Character>();
-    private List<String> hasVisited = new ArrayList<String>();
+    private final Map map;
+    private final Bot bot;
+    private final Tank tank;
+    private final Position position;
+    private final List<Character> barriers = new ArrayList<Character>();
+    private final List<String> hasVisited = new ArrayList<String>();
 
     BotMovementAlgorithm(Bot bot, Tank tank) {
         this.bot = bot;
@@ -28,13 +28,13 @@ public class BotMovementAlgorithm {
     public void path() {
         int i = 0;
         while (i == 0) {
-            if (direction == 1) {
+            if (direction == 1 && !Thread.currentThread().isInterrupted()) {
                 i = checkUp();
-            } else if (direction == 2) {
+            } else if (direction == 2 && !Thread.currentThread().isInterrupted()) {
                 i = checkRight();
-            } else if (direction == 3) {
+            } else if (direction == 3 && !Thread.currentThread().isInterrupted()) {
                 i = checkDown();
-            } else if (direction == 4) {
+            } else if (direction == 4 && !Thread.currentThread().isInterrupted()) {
                 i = checkLeft();
             }
         }
