@@ -28,12 +28,15 @@ public class Game {
     final Barriers barriers = new Barriers();
     private Bullet bullet;
     private Bot bot;
-    private final Socket socket = new Socket("localhost", 8000);
+    private Socket socket;
     private ObjectOutputStream toServer = null;
     private ObjectInputStream fromServer = null;
     private Tank newTank;
+    private boolean multiplayer = false;
 
     //TODO bullet doesn't make any damage to tanks(bots, other players)
+    //TODO implement left-hand rule for bots intelligence
+    //TODO implement multiple online players
 
     Game(Map map, Tank tank) throws IOException {
         this.tank = tank;
@@ -75,8 +78,10 @@ public class Game {
 
         multiplayerButton.setOnMouseClicked(e -> {
             try {
+                socket = new Socket("localhost", 8000);
                 toServer = new ObjectOutputStream(socket.getOutputStream());
                 fromServer = new ObjectInputStream(socket.getInputStream());
+                multiplayer = true;
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -151,11 +156,13 @@ public class Game {
                     break;
             }
 
-            try {
-                toServer.writeObject(action);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+           if(multiplayer){
+               try {
+                   toServer.writeObject(action);
+               } catch (IOException ioException) {
+                   ioException.printStackTrace();
+               }
+           }
             Thread thread1 = new Thread(movement);
             if (thread1.isAlive()) {
                 thread1.interrupt();

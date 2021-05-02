@@ -213,6 +213,10 @@ public class Bot implements Player {
         return direction;
     }
 
+    public void setBotDirection(int direction){
+        this.direction = direction;
+    }
+
     @Override
     public Position getPosition() {
         return position;
