@@ -1,6 +1,6 @@
 package sample;
 
-public class BotMovement implements Runnable {
+public class BotMovement implements Runnable {          //class for moving bots with multithreading
     private final Bot bot;
     private Thread t;
     private final Tank tank;

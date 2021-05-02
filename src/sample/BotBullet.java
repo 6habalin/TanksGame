@@ -12,13 +12,13 @@ import javax.swing.*;
 import java.io.File;
 import java.util.Random;
 
-public class BotBullet implements Runnable {
+public class BotBullet implements Runnable {        //class for bot to shoot bullets to player
     private int x = 0;
     private int y = 0;
     private int direction;
     private final Map map;
     private int[][] barriers;
-    private final File bullet = new File("src/sample/Images/bullet.png");
+    private final File bullet = new File("src/sample/resources/bullet.png");
     private final Image image = new Image(bullet.toURI().toString());
     private final ImageView bulletView = new ImageView(image);
     private final Bot bot;
@@ -52,6 +52,7 @@ public class BotBullet implements Runnable {
         }
     }
 
+    //there are methods for 4 directions of shooting
     public void fireUp(Bot bot, GridPane fieldPane, Tank tank) {
         if (y > 0 && barriers[y - 1][x] != 9) {
             int counter = 1;
@@ -232,14 +233,14 @@ public class BotBullet implements Runnable {
         }
     }
 
-    public ImageView getBulletView(Bot tank) {
+    public ImageView getBulletView(Bot tank) {      //view for pane
         bulletView.setFitHeight(tank.getSize() - Math.round((tank.getSize() * 10.0) / 100));
         bulletView.setFitWidth(tank.getSize() - Math.round((tank.getSize() * 10.0) / 100));
         return bulletView;
     }
 
     @Override
-    public void run() {
+    public void run() {         //make bullets shoot parallely
 
         Random rand = new Random();
         boolean shoot = rand.nextBoolean();
@@ -306,10 +307,10 @@ public class BotBullet implements Runnable {
         t.interrupt();
     }
 
-    public void respawnTank(){
+    public void respawnTank() {         //if bot destroyed player tank, this method is called
         tank.tankMinusOneLive();
         Game.setTextLives(tank.getTankLives());
-        if(tank.getTankLives() == 0){
+        if (tank.getTankLives() == 0) {
             System.out.println("Your tank is destroyed");
             Platform.runLater(() -> {
                 fieldPane.getChildren().remove(tank.getTank());

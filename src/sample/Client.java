@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class Main extends Application {
+public class Client extends Application {
 
     public Scene sceneStart;
     private static String arguments;

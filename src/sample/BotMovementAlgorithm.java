@@ -4,7 +4,7 @@ package sample;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BotMovementAlgorithm {
+public class BotMovementAlgorithm {     //bots finding player algorithm (left-hand rule alg.)
     private int direction;
     private final Map map;
     private final Bot bot;
@@ -39,6 +39,7 @@ public class BotMovementAlgorithm {
         }
     }
 
+    //methods which find suitable move according to bot's direction
     public int checkUp() {
         int x = position.getY();
         int y = position.getX();

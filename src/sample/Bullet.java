@@ -12,13 +12,13 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bullet {
+public class Bullet {       //bullet class is designed for player to shoot
     private int x = 0;
     private int y = 0;
     private int direction;
     private Map map;
     private int[][] barriers;
-    private final File bullet = new File("src/sample/Images/bullet.png");
+    private final File bullet = new File("src/sample/resources/bullet.png");
     private final Image image = new Image(bullet.toURI().toString());
     private final ImageView bulletView = new ImageView(image);
     private List<Bot> botList = new ArrayList<Bot>();

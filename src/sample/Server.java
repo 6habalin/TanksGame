@@ -14,7 +14,7 @@ public class Server {
     private static Map map;
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {       //server class for handling players
 
         map = new Map(args[0]);
         ServerSocket server = new ServerSocket(8000);
@@ -167,7 +167,7 @@ public class Server {
         t2.start();
     }
 
-    public static Position getRandomPosition(Map map) {
+    public static Position getRandomPosition(Map map) {     //set random position of second connected player
         Random rand = new Random();
         Position pos;
         int randI = rand.nextInt(map.getSize());

@@ -1,6 +1,6 @@
 package sample;
 
-public class TankMovement implements Runnable {
+public class TankMovement implements Runnable {     //moves a tank
     private final Tank tank;
     String action;
 
@@ -11,7 +11,7 @@ public class TankMovement implements Runnable {
 
 
     @Override
-    public void run() {
+    public void run() {         //multithreading!
         switch (action) {
             case "up":
                 tank.moveUp(tank);

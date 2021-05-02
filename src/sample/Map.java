@@ -10,8 +10,8 @@ import java.util.Scanner;
 public class Map implements Serializable {
     private final char[][] map;
 
-    Map(String input) throws InvalidMapException, FileNotFoundException {
-        File fileMap = new File("src/sample/" + input);
+    Map(String input) throws InvalidMapException, FileNotFoundException {       //map class
+        File fileMap = new File("src/sample/resources/" + input);
         Scanner scan = new Scanner(fileMap);
         int counter = 0;
         int size = Integer.parseInt(scan.next());

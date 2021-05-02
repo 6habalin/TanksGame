@@ -5,14 +5,14 @@ import javafx.scene.image.ImageView;
 
 import java.io.File;
 
-public class Barriers {
+public class Barriers {         //barriers class for displaying them on pane
     private File file = null;
     private Image image = null;
     private ImageView imageView = null;
     private int size = 0;
 
     public ImageView getBrick() {
-        file = new File("src/sample/Images/brick.png");
+        file = new File("src/sample/resources/brick.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setFitHeight(size);
@@ -21,7 +21,7 @@ public class Barriers {
     }
 
     public ImageView getSteel() {
-        file = new File("src/sample/Images/steel.png");
+        file = new File("src/sample/resources/steel.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setFitHeight(size);
@@ -30,7 +30,7 @@ public class Barriers {
     }
 
     public ImageView getTrees() {
-        file = new File("src/sample/Images/trees.png");
+        file = new File("src/sample/resources/trees.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setFitHeight(size);
@@ -40,7 +40,7 @@ public class Barriers {
     }
 
     public ImageView getWater() {
-        file = new File("src/sample/Images/water.png");
+        file = new File("src/sample/resources/water.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setFitHeight(size);
@@ -49,7 +49,7 @@ public class Barriers {
     }
 
     public ImageView getTransparent() {
-        file = new File("src/sample/Images/water.png");
+        file = new File("src/sample/resources/water.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setOpacity(0);
@@ -59,7 +59,7 @@ public class Barriers {
     }
 
     public ImageView getBlack(int size) {
-        file = new File("src/sample/Images/black.png");
+        file = new File("src/sample/resources/black.png");
         image = new Image(file.toURI().toString());
         imageView = new ImageView(image);
         imageView.setFitHeight(size);

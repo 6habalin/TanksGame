@@ -10,11 +10,11 @@ import javafx.util.Duration;
 
 import java.io.File;
 
-public class Tank extends MyPlayer {
-    private final File tankUp = new File("src/sample/Images/tankUp.png");
-    private final File tankDown = new File("src/sample/Images/tankDown.png");
-    private final File tankLeft = new File("src/sample/Images/tankLeft.png");
-    private final File tankRight = new File("src/sample/Images/tankRight.png");
+public class Tank extends MyPlayer {            //class of player's tank
+    private final File tankUp = new File("src/sample/resources/tankUp.png");
+    private final File tankDown = new File("src/sample/resources/tankDown.png");
+    private final File tankLeft = new File("src/sample/resources/tankLeft.png");
+    private final File tankRight = new File("src/sample/resources/tankRight.png");
     private Image image = new Image(tankUp.toURI().toString());
     private final ImageView tankView = new ImageView(image);
     private Position position;
@@ -39,7 +39,7 @@ public class Tank extends MyPlayer {
 
 
 
-    public ImageView getTank() {
+    public ImageView getTank() {        //view for pane
         tankView.setFitHeight(size);
         tankView.setFitWidth(size);
         return tankView;
@@ -47,12 +47,13 @@ public class Tank extends MyPlayer {
 
     public void setSize(int x) {
         size = x;
-    }
+    } //size for pane
 
     public int getSize() {
         return size;
     }
 
+    //moving tank across the map in these methods
     public void moveRight(Tank tank) {
         int x = position.getX();
         int y = position.getY();
@@ -185,41 +186,41 @@ public class Tank extends MyPlayer {
         }
     }
 
-    private void setTankImage(File file) {
+    private void setTankImage(File file) {      //sets new image of the tank
         image = new Image(file.toURI().toString());
         tankView.setImage(image);
     }
 
     public int getTankDirection() {
         return direction;
-    }
+    }       //return tank direction
 
     public Position getTankPosition() {
         return position;
-    }
+    }       //return tank position
 
     public int getTankLives() {
         return tankLives;
-    }
+    }       //return quantity of lives
 
     public Map getMap(){
         return map;
-    }
+    }       //returns map of the tank
 
     public void setPosition(Position position){
         this.position = position;
-    }
+    }       //sets a new pos. of tank
 
     public void setTankMap(Map map){
         this.map = map;
-    }
+    }   //sets new map for tank
 
     public Position getStartPosition() {
         return startPosition;
-    }
+    }       //tanks's pos. at the beginning of game
 
     public void tankMinusOneLive(){
         tankLives--;
-    }
+    }       //minus 1 live
 
 }

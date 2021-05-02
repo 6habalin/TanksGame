@@ -20,7 +20,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-public class Game {
+public class Game {         //this method is needed for UI and data (map, bots, tank, etc.), also I have server connection in here
     private final Map map;
     static Scene sceneMain;
     private final Tank tank;
@@ -36,7 +36,6 @@ public class Game {
     private List<BotMovement> botMovementList = new ArrayList<BotMovement>();
     private List<BotBullet> botBulletList = new ArrayList<BotBullet>();
     private static Text text;
-    private static Text text2;
 
     Game(Map map, Tank tank) {
         this.tank = tank;
@@ -44,7 +43,7 @@ public class Game {
         bullet = new Bullet(map, tank.getTankDirection());
     }
 
-    public VBox startVBox(Stage primaryStage) throws FileNotFoundException {
+    public VBox startVBox(Stage primaryStage) throws FileNotFoundException {        //main menu
         VBox start = new VBox(20);
         start.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         start.setSpacing(50);
@@ -52,7 +51,7 @@ public class Game {
         text.setFont(Font.font("Snell Roundhand", FontWeight.BOLD, 104));
         text.setStroke(Color.DARKRED);
         text.setFill(Color.WHITE);
-        InputStream stream = new FileInputStream("src/sample/Images/start.png");
+        InputStream stream = new FileInputStream("src/sample/resources/start.png");
         Image image = new Image(stream);
         ImageView startButton = new ImageView(image);
         startButton.setFitWidth(200);
@@ -103,7 +102,7 @@ public class Game {
         return start;
     }
 
-    public BorderPane gameVBox(int n) throws IOException, ClassNotFoundException {
+    public BorderPane gameVBox(int n) throws IOException, ClassNotFoundException {      //game view
         BorderPane pane = new BorderPane();
         pane.setMaxSize(650, 600);
         pane.setMinSize(650, 600);
@@ -128,7 +127,7 @@ public class Game {
         text.setText("Lives:\n" + number);
     }
 
-    public void addPlayerActions() {
+    public void addPlayerActions() {            //add main player's actions
         sceneMain.setOnKeyPressed(e -> {
             Runnable movement = null;
             String action = "";
@@ -189,7 +188,7 @@ public class Game {
         });
     }
 
-    public void addBotsActions() {
+    public void addBotsActions() {      //make bots move
         Bot bot = new Bot(map);
         bot.setSize(barriers.getSize());
         BotBullet botBullet = new BotBullet(map, bot.getBotDirection(), bot, fieldPane, tank);
@@ -218,7 +217,7 @@ public class Game {
         }, 20000, 20000);
     }
 
-    public void addElements() {
+    public void addElements() {         //construct a map on pane
         barriers.setSize(map.getSize());
         tank.setSize(barriers.getSize());
         for (int i = 0; i < map.getSize(); i++) {
@@ -247,7 +246,7 @@ public class Game {
         }
     }
 
-    public void multiplayer() throws IOException, ClassNotFoundException {
+    public void multiplayer() throws IOException, ClassNotFoundException {          //handling actions of another player
         Runnable runnable = () -> {
             while (true) {
                 String action = null;
@@ -280,7 +279,7 @@ public class Game {
         t.start();
     }
 
-    public void addPlayer(Map chosenMap) throws IOException, ClassNotFoundException {
+    public void addPlayer(Map chosenMap) throws IOException, ClassNotFoundException {       //add another player to the game
         newTank = new Tank(chosenMap);
         newTank.setPosition((Position) fromServer.readObject());
         newTank.setSize(barriers.getSize());
@@ -321,5 +320,5 @@ public class Game {
             }
         }
         addPlayer(chosenMap);
-    }
+    } // construct map for multiplayer
 }

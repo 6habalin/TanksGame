@@ -9,11 +9,11 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.Random;
 
-public class Bot implements Player {
-    private final File tankUp = new File("src/sample/Images/botTankUp.png");
-    private final File tankDown = new File("src/sample/Images/botTankDown.png");
-    private final File tankLeft = new File("src/sample/Images/botTankLeft.png");
-    private final File tankRight = new File("src/sample/Images/botTankRight.png");
+public class Bot implements Player {        //bot class with bot movement methods
+    private final File tankUp = new File("src/sample/resources/botTankUp.png");
+    private final File tankDown = new File("src/sample/resources/botTankDown.png");
+    private final File tankLeft = new File("src/sample/resources/botTankLeft.png");
+    private final File tankRight = new File("src/sample/resources/botTankRight.png");
     private Image image = new Image(tankUp.toURI().toString());
     private final ImageView tankView = new ImageView(image);
     private Position position;
@@ -29,7 +29,7 @@ public class Bot implements Player {
     }
 
 
-    public ImageView getBotTank() {
+    public ImageView getBotTank() {     //return view for pane
         tankView.setFitHeight(size);
         tankView.setFitWidth(size);
         return tankView;
@@ -37,13 +37,13 @@ public class Bot implements Player {
 
     public void setSize(int x) {
         size = x;
-    }
+    }       //set size for pane
 
     public int getSize() {
         return size;
     }
 
-    public void setBotRandPosition() {
+    public void setBotRandPosition() {      //sets bot random position
         int randI = rand.nextInt(map.getSize());
         int randJ = rand.nextInt(map.getSize());
         while (true) {
