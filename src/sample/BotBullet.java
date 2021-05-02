@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.Random;
 
@@ -22,7 +23,7 @@ public class BotBullet implements Runnable {
     private final ImageView bulletView = new ImageView(image);
     private final Bot bot;
     private final GridPane fieldPane;
-    private final Tank tank;
+    private Tank tank;
     Thread t = null;
     private boolean condition = false;
 
@@ -60,6 +61,10 @@ public class BotBullet implements Runnable {
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             int i = y - 1;
             while (i >= 0) {
+                if (tank.getTankPosition().getX() == x && tank.getTankPosition().getY() == i) {
+                    respawnTank();
+                    break;
+                }
                 if (barriers[i][x] == 0) {
                     counter++;
                     i--;
@@ -70,18 +75,13 @@ public class BotBullet implements Runnable {
                         map.setElement('0', i, x);
                         ImageView v = new Barriers().getBlack(bot.getSize());
                         int finalI = i;
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                fieldPane.add(v, x, finalI);
-                                bot.getBotTank().toFront();
-                            }
+                        Platform.runLater(() -> {
+                            fieldPane.add(v, x, finalI);
+                            bot.getBotTank().toFront();
                         });
                     }
                     barriers[i][x]--;
                     break;
-                } else if (tank.getTankPosition().equals(new Position(x, i))) {
-                    System.out.println("HIT HIT HIT");
                 } else {
                     barriers[i][x]--;
                     break;
@@ -106,6 +106,10 @@ public class BotBullet implements Runnable {
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             int i = y + 1;
             while (i < barriers.length) {
+                if (tank.getTankPosition().getX() == x && tank.getTankPosition().getY() == i) {
+                    respawnTank();
+                    break;
+                }
                 if (barriers[i][x] == 0) {
                     counter++;
                     i++;
@@ -123,8 +127,6 @@ public class BotBullet implements Runnable {
                     }
                     barriers[i][x]--;
                     break;
-                } else if (tank.getTankPosition().equals(new Position(x, i))) {
-                    System.out.println("HIT HIT HIT");
                 } else {
                     barriers[i][x]--;
                     break;
@@ -144,16 +146,15 @@ public class BotBullet implements Runnable {
         if (x > 0 && barriers[y][x - 1] != 9) {
             int counter = 1;
             BotBullet bullet = new BotBullet(map, bot.getBotDirection(), bot, fieldPane, tank);
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    fieldPane.add(bullet.getBulletView(bot), bot.getPosition().getX(), bot.getPosition().getY());
-                }
-            });
+            Platform.runLater(() -> fieldPane.add(bullet.getBulletView(bot), bot.getPosition().getX(), bot.getPosition().getY()));
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(bot));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             int i = x - 1;
             while (i >= 0) {
+                if (tank.getTankPosition().getX() == i && tank.getTankPosition().getY() == y) {
+                    respawnTank();
+                    break;
+                }
                 if (barriers[y][i] == 0) {
                     counter++;
                     i--;
@@ -171,8 +172,6 @@ public class BotBullet implements Runnable {
                     }
                     barriers[y][i]--;
                     break;
-                } else if (tank.getTankPosition().equals(new Position(i, y))) {
-                    System.out.println("HIT HIT HIT");
                 } else {
                     barriers[y][i]--;
                     break;
@@ -197,6 +196,10 @@ public class BotBullet implements Runnable {
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             int i = x + 1;
             while (i < barriers.length) {
+                if (tank.getTankPosition().getX() == i && tank.getTankPosition().getY() == y) {
+                    respawnTank();
+                    break;
+                }
                 if (barriers[y][i] == 0) {
                     counter++;
                     i++;
@@ -214,8 +217,6 @@ public class BotBullet implements Runnable {
                     }
                     barriers[y][i]--;
                     break;
-                } else if (tank.getTankPosition().equals(new Position(i, y))) {
-                    System.out.println("HIT HIT HIT");
                 } else {
                     barriers[y][i]--;
                     break;
@@ -240,50 +241,50 @@ public class BotBullet implements Runnable {
     @Override
     public void run() {
 
-            Random rand = new Random();
-            boolean shoot = rand.nextBoolean();
-            bulletView.setFitHeight(bot.getSize() - Math.round((bot.getSize() * 10.0) / 100));
-            bulletView.setFitWidth(bot.getSize() - Math.round((bot.getSize() * 10.0) / 100));
-            while (!condition) {
-                if (shoot) {
-                    direction = bot.getBotDirection();
-                    x = bot.getPosition().getX();
-                    y = bot.getPosition().getY();
-                    if (direction == 1) {
-                        if(!Thread.currentThread().isInterrupted()) {
-                            fireUp(bot, fieldPane, tank);
-                        } else {
-                            break;
-                        }
-                    } else if (direction == 2) {
-                        if(!Thread.currentThread().isInterrupted()) {
-                            fireRight(bot, fieldPane, tank);
-                        } else {
-                            break;
-                        }
-                    } else if (direction == 3) {
-                        if(!Thread.currentThread().isInterrupted()) {
-                            fireDown(bot, fieldPane, tank);
-                        } else {
-                            break;
-                        }
-                    } else if (direction == 4) {
-                        if(!Thread.currentThread().isInterrupted()) {
-                            fireLeft(bot, fieldPane, tank);
-                        } else {
-                            break;
-                        }
+        Random rand = new Random();
+        boolean shoot = rand.nextBoolean();
+        bulletView.setFitHeight(bot.getSize() - Math.round((bot.getSize() * 10.0) / 100));
+        bulletView.setFitWidth(bot.getSize() - Math.round((bot.getSize() * 10.0) / 100));
+        while (!condition) {
+            if (shoot) {
+                direction = bot.getBotDirection();
+                x = bot.getPosition().getX();
+                y = bot.getPosition().getY();
+                if (direction == 1) {
+                    if (!Thread.currentThread().isInterrupted()) {
+                        fireUp(bot, fieldPane, tank);
+                    } else {
+                        break;
                     }
-                }
-                if(!Thread.currentThread().isInterrupted()) {
-                    shoot = rand.nextBoolean();
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
+                } else if (direction == 2) {
+                    if (!Thread.currentThread().isInterrupted()) {
+                        fireRight(bot, fieldPane, tank);
+                    } else {
+                        break;
+                    }
+                } else if (direction == 3) {
+                    if (!Thread.currentThread().isInterrupted()) {
+                        fireDown(bot, fieldPane, tank);
+                    } else {
+                        break;
+                    }
+                } else if (direction == 4) {
+                    if (!Thread.currentThread().isInterrupted()) {
+                        fireLeft(bot, fieldPane, tank);
+                    } else {
+                        break;
                     }
                 }
             }
+            if (!Thread.currentThread().isInterrupted()) {
+                shoot = rand.nextBoolean();
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
 
     }
 
@@ -300,8 +301,21 @@ public class BotBullet implements Runnable {
         }
     }
 
-    public void stopBullet(){
+    public void stopBullet() {
         condition = true;
         t.interrupt();
+    }
+
+    public void respawnTank(){
+        tank.tankMinusOneLive();
+        if(tank.getTankLives() == 0){
+            System.out.println("Your tank is destroyed");
+            Platform.runLater(() -> {
+                fieldPane.getChildren().remove(tank.getTank());
+                fieldPane.add(new Barriers().getBlack(tank.getSize()), tank.getStartPosition().getX(), tank.getStartPosition().getY());
+                tank.getMap().setElement('0', tank.getTankPosition().getX(), tank.getTankPosition().getY());
+            });
+            JOptionPane.showMessageDialog(new JFrame(), "GAME OVER!", "Dialog", JOptionPane.WARNING_MESSAGE);
+        }
     }
 }

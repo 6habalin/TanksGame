@@ -9,7 +9,6 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Bullet {
@@ -275,7 +274,6 @@ public class Bullet {
             Map bots = tank.getMap();
             int counter = 1;
             Bullet bullet = new Bullet(map, tank.getTankDirection());
-            bullet.getBulletView(tank).toFront();
             TranslateTransition transition = new TranslateTransition(Duration.millis(100), bullet.getBulletView(tank));
             PauseTransition pause = new PauseTransition(Duration.millis(100));
             ImageView v = new Barriers().getBlack(tank.getSize());
@@ -291,23 +289,24 @@ public class Bullet {
                         break;
                     default:
                         for (int j = 0; j < botList.size(); j++) {
-                            if (botList.get(j).getPosition().getY() == i) {
+                            if (botList.get(j).getPosition().getY() == i && botList.get(j).getPosition().getX() == x) {
                                 cond = true;
                                 cicleBreak = true;
                                 System.out.println("Hit");
                                 fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
-                                bots.setElement('0', i, x);
-                                fieldPane.add(v, x, i);
                                 tank.getTank().toFront();
+                                bullet.getBulletView(tank).toFront();
                                 botMovementList.get(j).stopMovement();
                                 botBulletList.get(j).stopBullet();
-                                botList.remove(botList.get(j));
-                                botMovementList.remove(botMovementList.get(j));
-                                botBulletList.remove(botBulletList.get(j));
                                 transition.setByY((-1) * counter * tank.getSize() - 25);
                                 transition.play();
                                 pause.setOnFinished(e -> bullet.getBulletView(tank).setVisible(false));
                                 pause.play();
+                                fieldPane.getChildren().remove(botList.get(j).getBotTank());
+                                bots.setElement('0', i, x);
+                                botList.remove(botList.get(j));
+                                botMovementList.remove(botMovementList.get(j));
+                                botBulletList.remove(botBulletList.get(j));
                             } else {
                                 counter++;
                             }
@@ -345,23 +344,24 @@ public class Bullet {
                         break;
                     default:
                         for (int j = 0; j < botList.size(); j++) {
-                            if (botList.get(j).getPosition().getY() == i) {
+                            if (botList.get(j).getPosition().getY() == i && botList.get(j).getPosition().getX() == x) {
                                 cond = true;
                                 cicleBreak = true;
                                 System.out.println("Hit");
                                 fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
-                                bots.setElement('0', i, x);
-                                fieldPane.add(v, x, i);
                                 tank.getTank().toFront();
+                                bullet.getBulletView(tank).toFront();
                                 botMovementList.get(j).stopMovement();
                                 botBulletList.get(j).stopBullet();
-                                botList.remove(botList.get(j));
-                                botMovementList.remove(botMovementList.get(j));
-                                botBulletList.remove(botBulletList.get(j));
                                 transition.setByY(counter * tank.getSize() - 25);
                                 transition.play();
                                 pause.setOnFinished(e -> bullet.getBulletView(tank).setVisible(false));
                                 pause.play();
+                                fieldPane.getChildren().remove(botList.get(j).getBotTank());
+                                botList.remove(botList.get(j));
+                                botMovementList.remove(botMovementList.get(j));
+                                botBulletList.remove(botBulletList.get(j));
+                                bots.setElement('0', i, x);
                             } else {
                                 counter++;
                             }
@@ -399,23 +399,24 @@ public class Bullet {
                         break;
                     default:
                         for (int j = 0; j < botList.size(); j++) {
-                            if (botList.get(j).getPosition().getX() == i) {
+                            if (botList.get(j).getPosition().getX() == i && botList.get(j).getPosition().getY() == y) {
                                 cond = true;
                                 cicleBreak = true;
                                 System.out.println("Hit");
                                 fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
-                                bots.setElement('0', y, i);
-                                fieldPane.add(v, i, y);
                                 tank.getTank().toFront();
+                                bullet.getBulletView(tank).toFront();
                                 botMovementList.get(j).stopMovement();
                                 botBulletList.get(j).stopBullet();
-                                botList.remove(botList.get(j));
-                                botMovementList.remove(botMovementList.get(j));
-                                botBulletList.remove(botBulletList.get(j));
                                 transition.setByX(counter * tank.getSize() - 25);
                                 transition.play();
                                 pause.setOnFinished(e -> bullet.getBulletView(tank).setVisible(false));
                                 pause.play();
+                                fieldPane.getChildren().remove(botList.get(j).getBotTank());
+                                botList.remove(botList.get(j));
+                                botMovementList.remove(botMovementList.get(j));
+                                botBulletList.remove(botBulletList.get(j));
+                                bots.setElement('0', y, i);
                             } else {
                                 counter++;
                             }
@@ -453,23 +454,24 @@ public class Bullet {
                         break;
                     default:
                         for (int j = 0; j < botList.size(); j++) {
-                            if (botList.get(j).getPosition().getX() == i) {
+                            if (botList.get(j).getPosition().getX() == i && botList.get(j).getPosition().getY() == y) {
                                 cond = true;
                                 cicleBreak = true;
                                 System.out.println("Hit");
                                 fieldPane.add(bullet.getBulletView(tank), tank.getTankPosition().getX(), tank.getTankPosition().getY());
-                                bots.setElement('0', y, i);
-                                fieldPane.add(v, i, y);
                                 tank.getTank().toFront();
+                                bullet.getBulletView(tank).toFront();
                                 botMovementList.get(j).stopMovement();
                                 botBulletList.get(j).stopBullet();
-                                botList.remove(botList.get(j));
-                                botMovementList.remove(botMovementList.get(j));
-                                botBulletList.remove(botBulletList.get(j));
                                 transition.setByX((-1) * counter * tank.getSize() - 25);
                                 transition.play();
                                 pause.setOnFinished(e -> bullet.getBulletView(tank).setVisible(false));
                                 pause.play();
+                                fieldPane.getChildren().remove(botList.get(j).getBotTank());
+                                botList.remove(botList.get(j));
+                                botMovementList.remove(botMovementList.get(j));
+                                botBulletList.remove(botBulletList.get(j));
+                                bots.setElement('0', y, i);
                             } else {
                                 counter++;
                             }

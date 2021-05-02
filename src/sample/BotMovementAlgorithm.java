@@ -1,6 +1,5 @@
 package sample;
 
-import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +88,6 @@ public class BotMovementAlgorithm {
                     }
 
                 } else {
-                    //direction = rotateCounterClockWise(direction);
                     bot.moveUp(bot);
                 }
             } else {
@@ -121,7 +119,6 @@ public class BotMovementAlgorithm {
                     }
 
                 } else {
-                    //direction = rotateCounterClockWise(direction);
                     bot.moveRight(bot);
                 }
             } else {
@@ -157,7 +154,6 @@ public class BotMovementAlgorithm {
                     }
 
                 } else {
-                    //direction = rotateCounterClockWise(direction);
                     bot.moveDown(bot);
                 }
             } else {
@@ -171,26 +167,4 @@ public class BotMovementAlgorithm {
         }
     }
 
-
-    public int rotateClockWise(int dir) {
-        if (dir > 0 && dir <= 4) {
-            if (dir == 4) {
-                dir = 1;
-            } else {
-                dir += 1;
-            }
-        }
-        return dir;
-    }
-
-    public int rotateCounterClockWise(int dir) {
-        if (dir > 0 && dir <= 4) {
-            if (dir == 1) {
-                dir = 4;
-            } else {
-                dir -= 1;
-            }
-        }
-        return dir;
-    }
 }

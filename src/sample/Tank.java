@@ -2,8 +2,10 @@ package sample;
 
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -21,6 +23,7 @@ public class Tank extends MyPlayer {
     private int direction = 1;
     private int tankLives = 5;
     private TranslateTransition transition;
+    private Position startPosition;
 
     Tank(Map map) {
         this.map = map;
@@ -28,6 +31,7 @@ public class Tank extends MyPlayer {
             for (int j = 0; j < map.getSize(); j++) {
                 if (map.getValueAt(i, j) == 'P') {
                     position = new Position(j, i);
+                    startPosition = new Position(j, i);
                 }
             }
         }
@@ -208,6 +212,14 @@ public class Tank extends MyPlayer {
 
     public void setTankMap(Map map){
         this.map = map;
+    }
+
+    public Position getStartPosition() {
+        return startPosition;
+    }
+
+    public void tankMinusOneLive(){
+        tankLives--;
     }
 
 }

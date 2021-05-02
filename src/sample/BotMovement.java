@@ -5,16 +5,17 @@ public class BotMovement implements Runnable {
     private Thread t;
     private final Tank tank;
     private boolean movement = false;
+    private final BotMovementAlgorithm algorithm;
 
 
     BotMovement(Bot bot, Tank tank) {
         this.bot = bot;
         this.tank = tank;
+        algorithm = new BotMovementAlgorithm(bot, tank);
     }
 
     @Override
     public void run() {
-        BotMovementAlgorithm algorithm = new BotMovementAlgorithm(bot, tank);
         while(!movement){
             algorithm.path();
         }
