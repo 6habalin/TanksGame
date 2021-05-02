@@ -308,6 +308,7 @@ public class BotBullet implements Runnable {
 
     public void respawnTank(){
         tank.tankMinusOneLive();
+        Game.setTextLives(tank.getTankLives());
         if(tank.getTankLives() == 0){
             System.out.println("Your tank is destroyed");
             Platform.runLater(() -> {

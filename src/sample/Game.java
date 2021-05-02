@@ -35,6 +35,7 @@ public class Game {
     private List<Bot> botList = new ArrayList<Bot>();
     private List<BotMovement> botMovementList = new ArrayList<BotMovement>();
     private List<BotBullet> botBulletList = new ArrayList<BotBullet>();
+    private static Text text;
 
     Game(Map map, Tank tank) {
         this.tank = tank;
@@ -105,7 +106,7 @@ public class Game {
         BorderPane pane = new BorderPane();
         pane.setMaxSize(650, 600);
         pane.setMinSize(650, 600);
-        Text text = new Text("Lives:\n" + tank.getTankLives());
+        text = new Text("Lives:\n" + tank.getTankLives());
         text.setFont(Font.font("Verdana", FontWeight.BOLD, 18));
         text.setTextAlignment(TextAlignment.CENTER);
         fieldPane.setMaxSize(500, 500);
@@ -120,6 +121,10 @@ public class Game {
             addElementsMultiplayer();
         }
         return pane;
+    }
+
+    public static void setTextLives(int number){
+        text.setText("Lives:\n" + number);
     }
 
     public void addPlayerActions() {
@@ -149,7 +154,11 @@ public class Game {
                     break;
                 case SPACE:
                     //add multiplayer extension
-                    bullet.fire(tank, fieldPane, botList, botMovementList, botBulletList);
+                    if(multiplayer) {
+                        bullet.fire(tank, fieldPane);
+                    } else {
+                        bullet.fire(tank, fieldPane, botList, botMovementList, botBulletList);
+                    }
                     action = "fire";
                     System.out.println("Fire!");
                     break;
@@ -170,7 +179,11 @@ public class Game {
         });
         sceneMain.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
-                bullet.fire(tank, fieldPane, botList, botMovementList, botBulletList);
+                if(multiplayer) {
+                    bullet.fire(tank, fieldPane);
+                } else {
+                    bullet.fire(tank, fieldPane, botList, botMovementList, botBulletList);
+                }
                 System.out.println("Fire!");
             }
         });
@@ -181,10 +194,7 @@ public class Game {
         bot.setSize(barriers.getSize());
         BotBullet botBullet = new BotBullet(map, bot.getBotDirection(), bot, fieldPane, tank);
         fieldPane.add(bot.getBotTank(), bot.getPosition().getX(), bot.getPosition().getY());
-//        Runnable runnable = new BotMovement(bot, tank);
-//        Thread threadBot = new Thread(runnable);
         BotMovement bMovement = new BotMovement(bot, tank);
-        //threadBot.start();
         bMovement.start();
         botBullet.start();
         botList.add(bot);
@@ -274,7 +284,6 @@ public class Game {
         newTank = new Tank(chosenMap);
         newTank.setPosition((Position) fromServer.readObject());
         newTank.setSize(barriers.getSize());
-        //map.setElement('P', newTank.getPosition().getY(), newTank.getPosition().getX());
         fieldPane.add(newTank.getTank(), newTank.getTankPosition().getX(), newTank.getTankPosition().getY());
     }
 
