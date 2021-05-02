@@ -175,7 +175,6 @@ public class Server {
         while (true) {
             if (map.getValueAt(randJ, randI) == '0') {
                 pos = new Position(randI, randJ);
-//                map.setElement('P', randJ, randI);
                 break;
             } else {
                 randI = rand.nextInt(map.getSize());

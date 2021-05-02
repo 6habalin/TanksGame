@@ -36,6 +36,7 @@ public class Game {
     private List<BotMovement> botMovementList = new ArrayList<BotMovement>();
     private List<BotBullet> botBulletList = new ArrayList<BotBullet>();
     private static Text text;
+    private static Text text2;
 
     Game(Map map, Tank tank) {
         this.tank = tank;
@@ -153,7 +154,6 @@ public class Game {
                     action = "right";
                     break;
                 case SPACE:
-                    //add multiplayer extension
                     if(multiplayer) {
                         bullet.fire(tank, fieldPane);
                     } else {
@@ -270,7 +270,7 @@ public class Game {
                         newTank.moveRight(newTank);
                         break;
                     case "fire":
-                        Platform.runLater(() -> bullet.fireOnline(newTank, fieldPane));
+                        Platform.runLater(() -> bullet.fireOnline(newTank, fieldPane, tank, toServer));
                         newTank.setTankMap(map);
                         break;
                 }
